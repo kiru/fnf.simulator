@@ -1,0 +1,21 @@
+simulator:
+  name: sim02  # Id of this simulator. Should be unique.
+
+  # The ticks that run the simulator. Gaussian distribution to model latency
+  tickPeriod: 20
+  sigma: 4
+
+  # duration of a penalty forced brake in ms
+  penalty: 1000
+
+  razor:
+    gyroz:
+      offset: 5
+      sigmaStationary: 1
+      sigma0: 130.0
+      floatingAverageSize: 7
+      factorDuration1: 40000
+      amplitudeSigmaContribution: 0.083333
+      amplitudeFactorIntoCurve: 600.0
+      amplitudeFactorWithinCurve: 400
+
