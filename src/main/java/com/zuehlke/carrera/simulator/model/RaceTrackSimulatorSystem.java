@@ -38,9 +38,9 @@ public class RaceTrackSimulatorSystem {
     private ActorRef clock;
 
     private final SimpMessagingTemplate template;
-    private final RaceTrackToRelayConnection connection;
+    private final PilotInterface connection;
 
-    public RaceTrackSimulatorSystem(String raceTrackId, RaceTrackToRelayConnection connection,
+    public RaceTrackSimulatorSystem(String raceTrackId, PilotInterface connection,
                                     SimpMessagingTemplate template, RealDistribution tickDistribution,
                                     SimulatorProperties properties) {
 

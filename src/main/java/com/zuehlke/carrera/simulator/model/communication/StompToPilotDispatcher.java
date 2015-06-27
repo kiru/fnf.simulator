@@ -2,39 +2,36 @@ package com.zuehlke.carrera.simulator.model.communication;
 
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
 import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
 import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import com.zuehlke.carrera.simulator.model.PilotInterface;
 
 /**
  * This actor dispatches relay-track event data to the pilot or proxy (relay).
  */
 public class StompToPilotDispatcher extends UntypedActor {
 
-    private final String raceTrackId;
-    private final RaceTrackToRelayConnection connection;
+    private final PilotInterface connection;
 
 
     /**
      *
-     * @param raceTrackId the id of the track
-     * @param connection the connection object
+     * @param connection the interface to some pilot counterpart
      * Create Props for an actor of this type.
      * @return a Props for creating this actor, which can then be further configured
      * (e.g. calling ‘.withDispatcher()‘ on it)
      */
-    public static Props props(final String raceTrackId, final RaceTrackToRelayConnection connection) {
+    public static Props props(final String raceTrackId, final PilotInterface connection) {
         if(raceTrackId == null) throw new IllegalArgumentException("raceTrackId must not be NULL!");
         if(connection == null) throw new IllegalArgumentException("relayConnectorService must not be NULL!");
 
-        return Props.create(StompToPilotDispatcher.class, () -> new StompToPilotDispatcher(raceTrackId, connection));
+        return Props.create(StompToPilotDispatcher.class, () -> new StompToPilotDispatcher(connection));
     }
 
 
-    private StompToPilotDispatcher(String raceTrackId, RaceTrackToRelayConnection connection){
-        this.raceTrackId = raceTrackId;
+    private StompToPilotDispatcher(PilotInterface connection){
         this.connection = connection;
     }
 
