@@ -13,7 +13,6 @@
 
     <scm>
         <connection>scm:git:https://github.com/FastAndFurious/simulib.git</connection>
-        <developerConnection>scm:git:git@github.com:FastAndFurious/simulib.git</developerConnection>
         <url>https://github.com/FastAndFurious/simulib.git</url>
         <tag>HEAD</tag>
     </scm>
@@ -27,13 +26,7 @@
         <dependency>
             <groupId>com.zuehlke.carrera</groupId>
             <artifactId>carrera.clientapi</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zuehlke.carrera</groupId>
-            <artifactId>carrera.akkautils</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1.4</version>
         </dependency>
 
         <dependency>
@@ -68,6 +61,7 @@
     </dependencies>
 
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -172,6 +166,7 @@
             <id>bintray</id>
             <url>https://api.bintray.com/maven/fastandfurious/FastAndFurious/simulib</url>
         </repository>
+
     </distributionManagement>
 
 
