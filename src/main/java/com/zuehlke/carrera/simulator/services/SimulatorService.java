@@ -57,7 +57,7 @@ public class SimulatorService {
 
         raceTrackSimulatorSystem = new RaceTrackSimulatorSystem(
                 settings.getName(),
-                raceTrackToRelayConnection,
+                new RelayToPilotAdapter(raceTrackToRelayConnection),
                 stompDispatcher,
                 new NormalDistribution(settings.getTickPeriod(), settings.getSigma()),
                 settings);
