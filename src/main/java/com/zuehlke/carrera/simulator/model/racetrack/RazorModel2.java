@@ -43,16 +43,18 @@ public class RazorModel2 {
 
         // Phase 1: sharp rise at the curve entry
         if ( ri != 0 && lastRi == 0 ) {
-            phase = Phase.INTO_CURVE;
-            calculateNewAmplitudes ( ri, v );
-            v_lastCurveEntry = v;
-            t_lastCurveEntry = timestamp;
-            lastRi = ri;
+            enteredCurve(ri, v, timestamp);
         }
 
         if ( ri == 0 && lastRi != 0 ) {
             phase = Phase.STRAIGHT;
             lastRi = 0;
+        }
+
+
+        // Switched from left to right curve or vice verca
+        if (ri != 0 && lastRi != 0 && (ri - lastRi < 0.1)) {
+            enteredCurve(ri, v, timestamp);
         }
 
         // Phase 2: plateau during the rest of the curve
@@ -70,6 +72,14 @@ public class RazorModel2 {
         RealDistribution distribution = new NormalDistribution( amplitude, sigma);
 
         return distribution.sample();
+    }
+
+    private void enteredCurve(final double ri, final double v, final long timestamp) {
+        phase = Phase.INTO_CURVE;
+        calculateNewAmplitudes ( ri, v );
+        v_lastCurveEntry = v;
+        t_lastCurveEntry = timestamp;
+        lastRi = ri;
     }
 
     private double duration_phase1 ( double v0 ) {
