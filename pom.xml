@@ -6,7 +6,7 @@
     <groupId>com.zuehlke.carrera</groupId>
     <artifactId>carrera.simulator</artifactId>
     <version>0.1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>Carrera Simulator</name>
     <description>A standalone carrera racetrack simulator</description>
