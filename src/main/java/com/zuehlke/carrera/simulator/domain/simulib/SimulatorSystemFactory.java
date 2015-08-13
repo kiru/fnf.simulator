@@ -1,44 +1,31 @@
 package com.zuehlke.carrera.simulator.domain.simulib;
 
-import com.zuehlke.carrera.relayapi.messages.PowerControl;
-import com.zuehlke.carrera.relayapi.messages.RaceStartMessage;
-import com.zuehlke.carrera.relayapi.messages.RaceStopMessage;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 import com.zuehlke.carrera.simulator.model.RaceTrackSimulatorSystem;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.util.function.Consumer;
-
 public class SimulatorSystemFactory {
-    private final PilotInterfaceFactory pilotInterfaceFactory;
+    private final PilotInterface pilotInterface;
     private final SimulatorProperties settings;
     private final SimpMessagingTemplate stompDispatcher;
 
-    public SimulatorSystemFactory(PilotInterfaceFactory pilotInterfaceFactory,
+    public SimulatorSystemFactory(PilotInterface pilotInterface,
                                   SimulatorProperties settings,
                                   SimpMessagingTemplate stompDispatcher) {
-        this.pilotInterfaceFactory = pilotInterfaceFactory;
+        this.pilotInterface = pilotInterface;
         this.settings = settings;
         this.stompDispatcher = stompDispatcher;
     }
 
-    public RaceTrackSimulatorSystem create(Consumer<PowerControl> onPowerControl,
-                                           Consumer<RaceStartMessage> onRaceStart,
-                                           Consumer<RaceStopMessage> onRaceStop) {
+    public RaceTrackSimulatorSystem create() {
         return new RaceTrackSimulatorSystem(
                 settings.getName(),
-                createPilotInterface(onPowerControl, onRaceStart, onRaceStop),
+                pilotInterface,
                 stompDispatcher,
                 createDistribution(settings),
                 settings);
-    }
-
-    private PilotInterface createPilotInterface(Consumer<PowerControl> onPowerControl,
-                                                Consumer<RaceStartMessage> onRaceStart,
-                                                Consumer<RaceStopMessage> onRaceStop) {
-        return pilotInterfaceFactory.create(onPowerControl, onRaceStart, onRaceStop);
     }
 
     private NormalDistribution createDistribution(SimulatorProperties settings) {

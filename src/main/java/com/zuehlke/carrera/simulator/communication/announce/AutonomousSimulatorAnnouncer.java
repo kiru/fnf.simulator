@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.announce;
+package com.zuehlke.carrera.simulator.communication.announce;
 
 import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class AutonomousSimulatorAnnouncer {
 
     @Scheduled(fixedRate = 2000)
     public void announce() {
-        apiAdapter.announce(this.whereAmIHostedService.getHttpEndpoint());
+        apiAdapter.announce(whereAmIHostedService.getHttpEndpoint());
     }
 
     @Scheduled(fixedRate = 10000)

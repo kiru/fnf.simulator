@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.rest;
+package com.zuehlke.carrera.simulator.web;
 
 import com.zuehlke.carrera.simulator.model.racetrack.TrackInfo;
 import com.zuehlke.carrera.simulator.domain.SimulatorService;

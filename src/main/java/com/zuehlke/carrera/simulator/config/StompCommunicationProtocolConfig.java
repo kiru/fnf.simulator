@@ -4,8 +4,8 @@ import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.RaceTrackType;
 import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
 import com.zuehlke.carrera.simulator.domain.api.StompSimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.domain.simulib.PilotInterfaceFactory;
-import com.zuehlke.carrera.simulator.domain.simulib.StompPilotInterfaceFactory;
+import com.zuehlke.carrera.simulator.domain.simulib.SimulibStompApiAdapter;
+import com.zuehlke.carrera.simulator.model.PilotInterface;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,8 +20,8 @@ public class StompCommunicationProtocolConfig {
     }
 
     @Bean
-    public PilotInterfaceFactory pilotInterfaceFactory(RaceTrackToRelayConnection raceTrackToRelayConnection) {
-        return new StompPilotInterfaceFactory(raceTrackToRelayConnection);
+    public PilotInterface pilotInterface(RaceTrackToRelayConnection raceTrackToRelayConnection) {
+        return new SimulibStompApiAdapter(raceTrackToRelayConnection);
     }
 
     @Bean

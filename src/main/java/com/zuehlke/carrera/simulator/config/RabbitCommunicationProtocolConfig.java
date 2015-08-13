@@ -10,8 +10,8 @@ import com.zuehlke.carrera.api.seralize.JacksonSerializer;
 import com.zuehlke.carrera.api.seralize.Serializer;
 import com.zuehlke.carrera.simulator.domain.api.RabbitSimulatorApiAdapter;
 import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.domain.simulib.PilotInterfaceFactory;
-import com.zuehlke.carrera.simulator.domain.simulib.RabbitPilotInterfaceFactory;
+import com.zuehlke.carrera.simulator.domain.simulib.SimulibRabbitApiAdapter;
+import com.zuehlke.carrera.simulator.model.PilotInterface;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,8 +26,8 @@ public class RabbitCommunicationProtocolConfig {
     }
 
     @Bean
-    public PilotInterfaceFactory pilotInterfaceFactory(SimulatorApi simulatorApi) {
-        return new RabbitPilotInterfaceFactory(simulatorApi);
+    public PilotInterface pilotInterface(SimulatorApi simulatorApi) {
+        return new SimulibRabbitApiAdapter(simulatorApi);
     }
 
     @Bean

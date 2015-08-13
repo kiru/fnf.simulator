@@ -12,6 +12,7 @@
     <description>A standalone carrera racetrack simulator</description>
 
     <properties>
+        <logback.loglevel>DEBUG</logback.loglevel>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>com.zuehlke.carrera.simulator.SimulatorApp</start-class>
         <java.version>1.8</java.version>
@@ -27,7 +28,6 @@
 
 
     <dependencies>
-
         <dependency>
             <groupId>com.zuehlke.carrera</groupId>
             <artifactId>carrera.clientapi</artifactId>

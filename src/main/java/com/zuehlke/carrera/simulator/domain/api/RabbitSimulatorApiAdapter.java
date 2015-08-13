@@ -1,10 +1,10 @@
 package com.zuehlke.carrera.simulator.domain.api;
 
 import com.zuehlke.carrera.api.SimulatorApi;
-import com.zuehlke.carrera.relayapi.messages.RaceTrack;
-import com.zuehlke.carrera.relayapi.messages.RaceTrackType;
-import com.zuehlke.carrera.relayapi.messages.SensorEvent;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
+
+import java.util.function.Consumer;
 
 public class RabbitSimulatorApiAdapter implements SimulatorApiAdapter {
     private final SimulatorApi api;
@@ -31,5 +31,20 @@ public class RabbitSimulatorApiAdapter implements SimulatorApiAdapter {
     @Override
     public void send(SensorEvent message) {
         api.sensor(message);
+    }
+
+    @Override
+    public void onPowerControl(Consumer<PowerControl> onPowerControl) {
+        api.onPowerControl(onPowerControl);
+    }
+
+    @Override
+    public void onRaceStart(Consumer<RaceStartMessage> onRaceStart) {
+        api.onRaceStart(onRaceStart);
+    }
+
+    @Override
+    public void onRaceStop(Consumer<RaceStopMessage> onRaceStop) {
+        api.onRaceStop(onRaceStop);
     }
 }

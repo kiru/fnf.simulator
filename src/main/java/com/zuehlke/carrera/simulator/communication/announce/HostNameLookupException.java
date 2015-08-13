@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.announce;
+package com.zuehlke.carrera.simulator.communication.announce;
 
 public class HostNameLookupException extends RuntimeException {
 

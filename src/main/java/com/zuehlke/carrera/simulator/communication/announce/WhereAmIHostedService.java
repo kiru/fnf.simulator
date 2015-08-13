@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.announce;
+package com.zuehlke.carrera.simulator.communication.announce;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
