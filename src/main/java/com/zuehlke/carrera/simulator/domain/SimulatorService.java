@@ -1,37 +1,27 @@
 package com.zuehlke.carrera.simulator.domain;
 
-import com.zuehlke.carrera.api.SimulatorApi;
-import com.zuehlke.carrera.api.SimulatorApiImpl;
-import com.zuehlke.carrera.api.channel.PilotToSimulatorChannelNames;
-import com.zuehlke.carrera.api.client.rabbit.RabbitClient;
-import com.zuehlke.carrera.api.seralize.JacksonSerializer;
-import com.zuehlke.carrera.relayapi.messages.*;
+import com.zuehlke.carrera.relayapi.messages.PowerControl;
+import com.zuehlke.carrera.relayapi.messages.RaceStartMessage;
+import com.zuehlke.carrera.relayapi.messages.RaceStopMessage;
+import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
 import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
+import com.zuehlke.carrera.simulator.announce.WhereAmIHostedService;
 import com.zuehlke.carrera.simulator.domain.simulib.SimulatorSystemFactory;
-import com.zuehlke.carrera.simulator.domain.simulib.SimulibRabbitApiAdapter;
 import com.zuehlke.carrera.simulator.model.RaceTrackSimulatorSystem;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackDesign;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackInfo;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackSection;
-import org.apache.commons.math3.distribution.NormalDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 
-/**
- * Manages the racetrack simulator instance.
- */
 @Service
-@EnableScheduling
 public class SimulatorService {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorService.class);
     private final SimulatorApiAdapter apiAdapter;
@@ -81,16 +71,6 @@ public class SimulatorService {
         String trackId = settings.getName();
         return new TrackInfo(sections, trackId, design.getBoundarywidth(),
                 design.getBoudaryHeight(), design.getInitialAnchor());
-    }
-
-    @Scheduled(fixedRate = 10000)
-    public void ensureConnection() {
-        apiAdapter.ensureConnection();
-    }
-
-    @Scheduled(fixedRate = 2000)
-    public void announce() {
-        apiAdapter.announce(endpointService.getHttpEndpoint());
     }
 
     public void send(SensorEvent sensorEvent) {

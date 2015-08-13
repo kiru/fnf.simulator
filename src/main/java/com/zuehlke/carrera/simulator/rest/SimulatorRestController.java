@@ -16,38 +16,38 @@ public class SimulatorRestController {
         this.simulatorService = simulatorService;
     }
 
-    @RequestMapping(value="/track", method = RequestMethod.GET,  produces = "application/json")
+    @RequestMapping(value = "/track", method = RequestMethod.GET, produces = "application/json")
     public TrackInfo getTrack() {
         return simulatorService.getTrackInfo();
     }
 
-    @RequestMapping(value="/start", method = RequestMethod.POST)
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
     public void startSimulator() {
         simulatorService.startClock();
     }
 
-    @RequestMapping(value="/stop", method = RequestMethod.POST)
+    @RequestMapping(value = "/stop", method = RequestMethod.POST)
     public void stopSimulator() {
         simulatorService.stopClock();
     }
 
-    @RequestMapping(value="/reset", method = RequestMethod.POST)
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
     public void resetSimulator() {
         simulatorService.reset();
     }
 
-    @RequestMapping(value="/powerup/{delta}", method = RequestMethod.POST)
+    @RequestMapping(value = "/powerup/{delta}", method = RequestMethod.POST)
     public void powerup(@PathVariable int delta) {
         simulatorService.powerup(delta);
     }
 
-    @RequestMapping(value="/powerdown/{delta}", method = RequestMethod.POST)
-    public void powerdown(@PathVariable int delta ) {
+    @RequestMapping(value = "/powerdown/{delta}", method = RequestMethod.POST)
+    public void powerdown(@PathVariable int delta) {
         simulatorService.powerdown(delta);
     }
 
-    @RequestMapping(value="/selectDesign", method = RequestMethod.POST, produces = "application/json")
-    public TrackInfo selectDesign(@RequestBody String trackDesign ) {
-        return simulatorService.selectDesign ( trackDesign );
+    @RequestMapping(value = "/selectDesign", method = RequestMethod.POST, produces = "application/json")
+    public TrackInfo selectDesign(@RequestBody String trackDesign) {
+        return simulatorService.selectDesign(trackDesign);
     }
 }
