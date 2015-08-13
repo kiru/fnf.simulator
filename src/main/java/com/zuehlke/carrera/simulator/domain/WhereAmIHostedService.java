@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.services;
+package com.zuehlke.carrera.simulator.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +9,13 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/**
- *      Determines the url of this application
- */
 @Service
-public class EndpointService implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EndpointService.class);
-
+public class WhereAmIHostedService implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
+    private static final Logger LOG = LoggerFactory.getLogger(WhereAmIHostedService.class);
     private String address;
     private int port;
 
-    public EndpointService(){
+    public WhereAmIHostedService(){
         setAddress();
     }
 

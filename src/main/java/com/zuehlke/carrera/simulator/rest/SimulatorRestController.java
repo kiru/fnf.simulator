@@ -1,17 +1,20 @@
 package com.zuehlke.carrera.simulator.rest;
 
 import com.zuehlke.carrera.simulator.model.racetrack.TrackInfo;
-import com.zuehlke.carrera.simulator.services.SimulatorService;
+import com.zuehlke.carrera.simulator.domain.SimulatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api/simulator")
-public class SimulatorResource {
+public class SimulatorRestController {
+    private final SimulatorService simulatorService;
 
     @Autowired
-    private SimulatorService simulatorService;
+    public SimulatorRestController(SimulatorService simulatorService) {
+        this.simulatorService = simulatorService;
+    }
 
     @RequestMapping(value="/track", method = RequestMethod.GET,  produces = "application/json")
     public TrackInfo getTrack() {

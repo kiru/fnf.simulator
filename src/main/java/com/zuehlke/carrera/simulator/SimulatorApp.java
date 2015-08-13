@@ -9,13 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-public class TrackSimulatorApp {
+public class SimulatorApp {
 
-    /**
-     * Primary entry point of Carrera Simulator
-     * @param args
-     */
     public static void main(String[] args) {
-        SpringApplication.run(TrackSimulatorApp.class, args);
+        SpringApplication.run(SimulatorApp.class, args);
     }
 }

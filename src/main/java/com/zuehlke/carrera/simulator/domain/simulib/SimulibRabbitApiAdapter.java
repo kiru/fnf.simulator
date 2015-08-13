@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.services;
+package com.zuehlke.carrera.simulator.domain.simulib;
 
 import com.zuehlke.carrera.api.SimulatorApi;
 import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
@@ -7,10 +7,13 @@ import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
-public class SimulibSimulatorApiAdapter implements PilotInterface {
+/**
+ * TODO: currently, this is named rabbit and only rabbit is supported. But the API will support STOMP in the future too
+ */
+public class SimulibRabbitApiAdapter implements PilotInterface {
     private final SimulatorApi api;
 
-    public SimulibSimulatorApiAdapter(SimulatorApi api) {
+    public SimulibRabbitApiAdapter(SimulatorApi api) {
         this.api = api;
     }
 
