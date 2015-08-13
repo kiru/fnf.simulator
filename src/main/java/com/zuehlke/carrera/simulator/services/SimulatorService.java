@@ -1,5 +1,9 @@
 package com.zuehlke.carrera.simulator.services;
 
+import com.zuehlke.carrera.api.SimulatorApiImpl;
+import com.zuehlke.carrera.api.channel.PilotToSimulatorChannelNames;
+import com.zuehlke.carrera.api.client.rabbit.RabbitClient;
+import com.zuehlke.carrera.api.seralize.JacksonSerializer;
 import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
@@ -26,15 +30,14 @@ import java.util.List;
 @Service
 @EnableScheduling
 public class SimulatorService {
-
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorService.class);
-
-    private RaceTrackToRelayConnection raceTrackToRelayConnection;
-    private RaceTrackSimulatorSystem raceTrackSimulatorSystem;
-
     private final EndpointService endpointService;
     private final SimulatorProperties settings;
     private final SimpMessagingTemplate stompDispatcher;
+//    private RaceTrackToRelayConnection toRelayStompConnection;
+    private SimulatorApiImpl toRelayRabbitApi;
+    private RaceTrackSimulatorSystem raceTrackSimulatorSystem;
+
 
     @Autowired
     public SimulatorService(SimulatorProperties settings, SimpMessagingTemplate stompDispatcher, EndpointService endpointService  ){
@@ -45,19 +48,26 @@ public class SimulatorService {
 
     @PostConstruct
     public void init(){
-        raceTrackToRelayConnection =  new RaceTrackToRelayConnection(
-                settings.getRelayUrl(),
-                settings.getName(),
-                RaceTrackType.SIMULATOR,
-                "admin",
-                "admin",
-                this::firePowerControl,
-                this::fireRaceStartEvent,
-                this::fireRaceStopEvent);
+//        toRelayStompConnection =  new RaceTrackToRelayConnection(
+//                settings.getRelayUrl(),
+//                settings.getName(),
+//                RaceTrackType.SIMULATOR,
+//                "admin",
+//                "admin",
+//                this::firePowerControl,
+//                this::fireRaceStartEvent,
+//                this::fireRaceStopEvent);
+
+        toRelayRabbitApi = new SimulatorApiImpl(new PilotToSimulatorChannelNames(settings.getName()),
+                new RabbitClient(), new JacksonSerializer());
+        toRelayRabbitApi.onPowerControl(this::firePowerControl);
+        toRelayRabbitApi.onRaceStart(this::fireRaceStartEvent);
+        toRelayRabbitApi.onRaceStop(this::fireRaceStopEvent);
 
         raceTrackSimulatorSystem = new RaceTrackSimulatorSystem(
                 settings.getName(),
-                new RelayToPilotAdapter(raceTrackToRelayConnection),
+//                new RelayToPilotAdapter(toRelayStompConnection),
+                new SimulibSimulatorApiAdapter(toRelayRabbitApi),
                 stompDispatcher,
                 new NormalDistribution(settings.getTickPeriod(), settings.getSigma()),
                 settings);
@@ -87,36 +97,27 @@ public class SimulatorService {
                 design.getBoudaryHeight(), design.getInitialAnchor() );
     }
 
-    /**
-    /**
-     * @return the racetrack simulator system.
-     * If there is currently no simulator system running, a new one is being created.
-     */
-    private synchronized RaceTrackSimulatorSystem getSimulatorSystem(){
-        if(raceTrackSimulatorSystem == null) {
-
-            LOG.info("Creating a new racetrack simulator system...");
-
-            //raceTrackSimulatorSystem.start();
-        }
-        return raceTrackSimulatorSystem;
-    }
-
     @Scheduled(fixedRate = 10000)
     public void ensureConnection() {
-        raceTrackToRelayConnection.ensureConnection();
+//        toRelayStompConnection.ensureConnection();
+        // TODO: move to config
+        toRelayRabbitApi.connect("localhost");
     }
 
     @Scheduled(fixedRate = 2000)
     public void announce() {
-        raceTrackToRelayConnection.announce(endpointService.getHttpEndpoint());
+//        toRelayStompConnection.announce(endpointService.getHttpEndpoint());
+        RaceTrack announceMessage = new RaceTrack(RaceTrackType.SIMULATOR, settings.getName());
+        announceMessage.setLink(endpointService.getHttpEndpoint());
+        toRelayRabbitApi.announce(announceMessage);
     }
 
     /**
      * Send the given SensorEvent to the backend.
      */
-    public boolean send(SensorEvent sensorEvent) {
-        return raceTrackToRelayConnection.send(sensorEvent);
+    public void send(SensorEvent sensorEvent) {
+//        toRelayStompConnection.send(sensorEvent);
+        toRelayRabbitApi.sensor(sensorEvent);
     }
 
     private void firePowerControl(PowerControl control){
