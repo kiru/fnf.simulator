@@ -12,9 +12,9 @@ import com.zuehlke.carrera.simulator.model.akka.clock.ClockActor;
 import com.zuehlke.carrera.simulator.model.akka.clock.StartClock;
 import com.zuehlke.carrera.simulator.model.akka.clock.StopClock;
 import com.zuehlke.carrera.simulator.model.akka.messages.ActorRegistration;
-import com.zuehlke.carrera.simulator.model.communication.StompSimulatorNewsDispatcher;
-import com.zuehlke.carrera.simulator.model.communication.StompTickDispatcher;
-import com.zuehlke.carrera.simulator.model.communication.StompToPilotDispatcher;
+import com.zuehlke.carrera.simulator.model.akka.communication.SimulatorNewsDispatcherActor;
+import com.zuehlke.carrera.simulator.model.akka.communication.TickEventDispatcherActor;
+import com.zuehlke.carrera.simulator.model.akka.communication.ClientMessageDispatcherActor;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackDesign;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackPhysicsModel;
 import org.apache.commons.math3.distribution.RealDistribution;
@@ -54,14 +54,14 @@ public class RaceTrackSimulatorSystem {
         simulator = ActorSystem.create("Simulator");
         clock = simulator.actorOf(ClockActor.props(tickDistribution));
         // dispatch the tick to stomp clients
-        ActorRef tickDispatcher = simulator.actorOf(StompTickDispatcher.props(template));
+        ActorRef tickDispatcher = simulator.actorOf(TickEventDispatcherActor.props(template));
         clock.tell(new ActorRegistration(tickDispatcher), ActorRef.noSender());
 
         // dispatch the sensor data to the bot interface
-        ActorRef sensorEventDispatcher = simulator.actorOf(StompToPilotDispatcher.props(raceTrackId, connection));
+        ActorRef sensorEventDispatcher = simulator.actorOf(ClientMessageDispatcherActor.props(raceTrackId, connection));
 
         // dispatch the news from the race track actor to any stomp client
-        ActorRef newsDispatcher = simulator.actorOf(StompSimulatorNewsDispatcher.props(template));
+        ActorRef newsDispatcher = simulator.actorOf(SimulatorNewsDispatcherActor.props(template));
 
         // The central race track actor feeding a track, connected to sensor data dispatcher, news dispatcher
         raceTrackActor = simulator.actorOf(RaceTrackSimulationActor.props(
