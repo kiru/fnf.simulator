@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.domain.api;
+package com.zuehlke.carrera.simulator.services.adapter;
 
 import com.zuehlke.carrera.api.SimulatorApi;
 import com.zuehlke.carrera.relayapi.messages.*;

@@ -2,9 +2,9 @@ package com.zuehlke.carrera.simulator.config;
 
 import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.RaceTrackType;
-import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.domain.api.StompSimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.domain.simulib.SimulibStompApiAdapter;
+import com.zuehlke.carrera.simulator.services.adapter.SimulatorApiAdapter;
+import com.zuehlke.carrera.simulator.services.adapter.StompSimulatorApiAdapter;
+import com.zuehlke.carrera.simulator.services.adapter.StompSimulibApiAdapter;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class StompCommunicationProtocolConfig {
 
     @Bean
     public PilotInterface pilotInterface(RaceTrackToRelayConnection raceTrackToRelayConnection) {
-        return new SimulibStompApiAdapter(raceTrackToRelayConnection);
+        return new StompSimulibApiAdapter(raceTrackToRelayConnection);
     }
 
     @Bean

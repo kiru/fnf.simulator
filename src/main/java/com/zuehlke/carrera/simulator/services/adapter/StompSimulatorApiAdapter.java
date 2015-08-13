@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.domain.api;
+package com.zuehlke.carrera.simulator.services.adapter;
 
 import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.PowerControl;

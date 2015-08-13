@@ -1,7 +1,7 @@
 package com.zuehlke.carrera.simulator.config;
 
 import com.zuehlke.carrera.simulator.communication.listen.SimulatorCommandListener;
-import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
+import com.zuehlke.carrera.simulator.services.adapter.SimulatorApiAdapter;
 import com.zuehlke.carrera.simulator.model.RaceTrackSimulatorSystem;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

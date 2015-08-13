@@ -10,8 +10,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Component
-public class WhereAmIHostedService implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
-    private static final Logger LOG = LoggerFactory.getLogger(WhereAmIHostedService.class);
+public class WhereAmIHosted implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
+    private static final Logger LOG = LoggerFactory.getLogger(WhereAmIHosted.class);
     private String httpEndpointUrl;
 
     public String getHttpEndpoint() {

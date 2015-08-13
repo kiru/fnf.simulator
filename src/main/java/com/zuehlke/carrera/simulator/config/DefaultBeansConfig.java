@@ -17,5 +17,4 @@ public class DefaultBeansConfig {
         return new RaceTrackSimulatorSystem(settings.getName(), pilotInterface, stompDispatcher,
                 new NormalDistribution(settings.getTickPeriod(), settings.getSigma()), settings);
     }
-
 }
