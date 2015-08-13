@@ -10,16 +10,22 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 public class TickEventDispatcherActor extends UntypedActor {
     private static final Logger LOG = LoggerFactory.getLogger(TickEventDispatcherActor.class);
     private static final String TOPIC_CLOCK = "/topic/simulator/clock";
-    private final SimpMessagingTemplate template;
+    private final NewsInterface newsInterface;
 
     public static Props props(SimpMessagingTemplate template) {
         return Props.create(TickEventDispatcherActor.class, () -> {
-            return new TickEventDispatcherActor(template);
+            return new TickEventDispatcherActor(new StompNewsInterface(template));
         });
     }
 
-    private TickEventDispatcherActor(SimpMessagingTemplate template) {
-        this.template = template;
+    public static Props props(NewsInterface newsInterface) {
+        return Props.create(TickEventDispatcherActor.class, () -> {
+            return new TickEventDispatcherActor(newsInterface);
+        });
+    }
+
+    private TickEventDispatcherActor(NewsInterface newsInterface) {
+        this.newsInterface = newsInterface;
     }
 
     @Override
@@ -40,6 +46,6 @@ public class TickEventDispatcherActor extends UntypedActor {
     }
 
     private void tryHandleTick(Tick message) {
-        template.convertAndSend(TOPIC_CLOCK, message);
+        newsInterface.send(TOPIC_CLOCK, message);
     }
 }

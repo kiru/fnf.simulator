@@ -10,19 +10,25 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 public class SimulatorNewsDispatcherActor extends UntypedActor {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorNewsDispatcherActor.class);
     private static final String TOPIC_NEWS = "/topic/simulator/news";
-    private final SimpMessagingTemplate template;
+    private final NewsInterface newsInterface;
 
     public static Props props(SimpMessagingTemplate template) {
         return Props.create(SimulatorNewsDispatcherActor.class, () -> {
-            return new SimulatorNewsDispatcherActor(template);
+            return new SimulatorNewsDispatcherActor(new StompNewsInterface(template));
         });
     }
 
-    private SimulatorNewsDispatcherActor(SimpMessagingTemplate template) {
-        if (template == null) {
-            throw new IllegalArgumentException("template must not be null!");
+    public static Props props(NewsInterface newsInterface) {
+        return Props.create(SimulatorNewsDispatcherActor.class, () -> {
+            return new SimulatorNewsDispatcherActor(newsInterface);
+        });
+    }
+
+    private SimulatorNewsDispatcherActor(NewsInterface newsInterface) {
+        if (newsInterface == null) {
+            throw new IllegalArgumentException("newsInterface must not be null!");
         }
-        this.template = template;
+        this.newsInterface = newsInterface;
     }
 
     @Override
@@ -43,6 +49,6 @@ public class SimulatorNewsDispatcherActor extends UntypedActor {
     }
 
     private void tryHandleDataEventNews(Object message) {
-        template.convertAndSend(TOPIC_NEWS, message);
+        newsInterface.send(TOPIC_NEWS, message);
     }
 }
