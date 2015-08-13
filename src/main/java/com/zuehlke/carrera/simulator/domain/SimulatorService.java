@@ -6,7 +6,6 @@ import com.zuehlke.carrera.relayapi.messages.RaceStopMessage;
 import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
 import com.zuehlke.carrera.simulator.domain.api.SimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.announce.WhereAmIHostedService;
 import com.zuehlke.carrera.simulator.domain.simulib.SimulatorSystemFactory;
 import com.zuehlke.carrera.simulator.model.RaceTrackSimulatorSystem;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackDesign;
@@ -26,18 +25,15 @@ public class SimulatorService {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorService.class);
     private final SimulatorApiAdapter apiAdapter;
     private final SimulatorSystemFactory simulatorSystemFactory;
-    private final WhereAmIHostedService endpointService;
     private final SimulatorProperties settings;
     private RaceTrackSimulatorSystem raceTrackSimulatorSystem;
 
     @Autowired
     public SimulatorService(SimulatorApiAdapter apiAdapter,
                             SimulatorSystemFactory simulatorSystemFactory,
-                            WhereAmIHostedService endpointService,
                             SimulatorProperties settings) {
         this.apiAdapter = apiAdapter;
         this.simulatorSystemFactory = simulatorSystemFactory;
-        this.endpointService = endpointService;
         this.settings = settings;
     }
 
