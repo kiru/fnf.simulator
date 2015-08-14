@@ -7,77 +7,72 @@ import com.zuehlke.carrera.relayapi.messages.PowerControl;
 import com.zuehlke.carrera.relayapi.messages.RaceStartMessage;
 import com.zuehlke.carrera.relayapi.messages.RaceStopMessage;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
-import com.zuehlke.carrera.simulator.model.akka.RaceTrackSimulationActor;
-import com.zuehlke.carrera.simulator.model.akka.clock.ClockActor;
 import com.zuehlke.carrera.simulator.model.akka.clock.StartClock;
 import com.zuehlke.carrera.simulator.model.akka.clock.StopClock;
+import com.zuehlke.carrera.simulator.model.akka.communication.*;
 import com.zuehlke.carrera.simulator.model.akka.messages.ActorRegistration;
-import com.zuehlke.carrera.simulator.model.akka.communication.SimulatorNewsDispatcherActor;
-import com.zuehlke.carrera.simulator.model.akka.communication.TickEventDispatcherActor;
-import com.zuehlke.carrera.simulator.model.akka.communication.ClientMessageDispatcherActor;
 import com.zuehlke.carrera.simulator.model.racetrack.TrackDesign;
-import com.zuehlke.carrera.simulator.model.racetrack.TrackPhysicsModel;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class RaceTrackSimulatorSystem {
     private static final Logger LOG = LoggerFactory.getLogger(RaceTrackSimulatorSystem.class);
     private final String raceTrackId;
-    private final PilotInterface connection;
-    private final SimpMessagingTemplate template;
+    private final PilotInterface pilotChannel;
+    private final NewsInterface newsChannel;
     private ActorSystem simulator;
     private ActorRef raceTrackActor;
-    private ActorRef clock;
+    private ActorRef clockActor;
 
-    public RaceTrackSimulatorSystem(String raceTrackId, PilotInterface connection,
-                                    SimpMessagingTemplate template, RealDistribution tickDistribution,
+    public RaceTrackSimulatorSystem(String raceTrackId,
+                                    PilotInterface pilotChannel,
+                                    NewsInterface newsChannel,
+                                    RealDistribution tickDistribution,
                                     SimulatorProperties properties) {
         if (raceTrackId == null) {
             throw new IllegalArgumentException("raceTrackId must not be null");
         }
-        if (template == null)  {
-            throw new IllegalArgumentException("template must not be null");
+        if (pilotChannel == null) {
+            throw new IllegalArgumentException("pilotChannel must not be null");
         }
-        if (connection == null) {
-            throw new IllegalArgumentException("relayConnectorService must not be null");
+        if (newsChannel == null) {
+            throw new IllegalArgumentException("newsChannel must not be null");
         }
         this.raceTrackId = raceTrackId;
-        this.template = template;
-        this.connection = connection;
+        this.pilotChannel = pilotChannel;
+        this.newsChannel = newsChannel;
         init(tickDistribution, properties);
     }
 
     private void init(RealDistribution tickDistribution, SimulatorProperties properties) {
         LOG.info("Starting racetrack simulator with mean " + (int) tickDistribution.getNumericalMean() + " ms");
         simulator = ActorSystem.create("Simulator");
-        clock = simulator.actorOf(ClockActor.props(tickDistribution));
-        // dispatch the tick to stomp clients
-        ActorRef tickDispatcher = simulator.actorOf(TickEventDispatcherActor.props(template));
-        clock.tell(new ActorRegistration(tickDispatcher), ActorRef.noSender());
+        clockActor = setupStopWatch(simulator, tickDistribution, newsChannel);
+        raceTrackActor = setupSimulationSystem(simulator, raceTrackId, properties, pilotChannel, newsChannel);
+        clockActor.tell(new ActorRegistration(raceTrackActor), ActorRef.noSender());
+    }
 
-        // dispatch the sensor data to the bot interface
-        ActorRef sensorEventDispatcher = simulator.actorOf(ClientMessageDispatcherActor.props(raceTrackId, connection));
+    private ActorRef setupSimulationSystem(ActorSystem simulator, String raceTrackId, SimulatorProperties properties,
+                                           PilotInterface pilotChannel, NewsInterface newsChannel) {
+        RaceTrackSimulationActorCreator actorCreator = new RaceTrackSimulationActorCreator(raceTrackId, simulator,
+                properties);
+        return actorCreator.create(pilotChannel, newsChannel);
+    }
 
-        // dispatch the news from the race track actor to any stomp client
-        ActorRef newsDispatcher = simulator.actorOf(SimulatorNewsDispatcherActor.props(template));
-
-        // The central race track actor feeding a track, connected to sensor data dispatcher, news dispatcher
-        raceTrackActor = simulator.actorOf(RaceTrackSimulationActor.props(
-                raceTrackId, sensorEventDispatcher, newsDispatcher,
-                new TrackPhysicsModel(), properties));
-
-        clock.tell(new ActorRegistration(raceTrackActor), ActorRef.noSender());
+    private ActorRef setupStopWatch(ActorSystem simulator, RealDistribution tickDistribution, NewsInterface
+            newsChannel) {
+        ClockActorCreator actorCreator = new ClockActorCreator(simulator);
+        return actorCreator.create(tickDistribution, newsChannel);
     }
 
     public void startClock() {
-        // Start the clock which drives the whole simulator
-        clock.tell(new StartClock(), ActorRef.noSender());
+        // drives the whole simulator
+        clockActor.tell(new StartClock(), ActorRef.noSender());
     }
 
     public void stopClock() {
-        clock.tell(new StopClock(), ActorRef.noSender());
+        clockActor.tell(new StopClock(), ActorRef.noSender());
     }
 
     public void startRace(RaceStartMessage message) {
@@ -111,17 +106,12 @@ public class RaceTrackSimulatorSystem {
         raceTrackActor.tell(new Reset(), ActorRef.noSender());
     }
 
-    /**
-     * ask and the raceTrackActor and...
-     *
-     * @return the current track design
-     */
     public TrackDesign getTrackDesign() {
         return AkkaUtils.askActor(getClass(), TrackDesign.class, raceTrackActor, new QueryTrackDesign());
     }
 
-    // select design and make sure we don't return before it's done.
     public TrackDesign selectDesign(String trackDesign) {
+        // select design and make sure we don't return before it's done.
         return AkkaUtils.askActor(getClass(), TrackDesign.class, raceTrackActor, new QuerySelectDesign(trackDesign));
     }
 }

@@ -2,5 +2,7 @@ package com.zuehlke.carrera.simulator.model.akka.communication;
 
 public interface NewsInterface {
 
-    void send(String channel, Object message);
+    void data(Object message);
+
+    void tick(Object message);
 }

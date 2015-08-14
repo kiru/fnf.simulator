@@ -5,18 +5,10 @@ import akka.actor.UntypedActor;
 import com.zuehlke.carrera.simulator.model.akka.messages.DataEventNews;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class SimulatorNewsDispatcherActor extends UntypedActor {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorNewsDispatcherActor.class);
-    private static final String TOPIC_NEWS = "/topic/simulator/news";
     private final NewsInterface newsInterface;
-
-    public static Props props(SimpMessagingTemplate template) {
-        return Props.create(SimulatorNewsDispatcherActor.class, () -> {
-            return new SimulatorNewsDispatcherActor(new StompNewsInterface(template));
-        });
-    }
 
     public static Props props(NewsInterface newsInterface) {
         return Props.create(SimulatorNewsDispatcherActor.class, () -> {
@@ -49,6 +41,6 @@ public class SimulatorNewsDispatcherActor extends UntypedActor {
     }
 
     private void tryHandleDataEventNews(Object message) {
-        newsInterface.send(TOPIC_NEWS, message);
+        newsInterface.data(message);
     }
 }
