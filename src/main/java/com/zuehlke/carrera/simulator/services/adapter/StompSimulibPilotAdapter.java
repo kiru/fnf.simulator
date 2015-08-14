@@ -7,11 +7,11 @@ import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
-public class StompSimulibApiAdapter implements PilotInterface {
+public class StompSimulibPilotAdapter implements PilotInterface {
 
     private final RaceTrackToRelayConnection adaptee;
 
-    public StompSimulibApiAdapter(RaceTrackToRelayConnection connection) {
+    public StompSimulibPilotAdapter(RaceTrackToRelayConnection connection) {
         this.adaptee = connection;
     }
 

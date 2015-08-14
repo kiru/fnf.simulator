@@ -39,7 +39,7 @@
     <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-framework:2.3.15-gfa" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-http-server:2.3.15-gfa" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-http:2.3.15-gfa" level="project" />
-    <orderEntry type="library" name="Maven: com.zuehlke.carrera:carrera.simulib:0.9.3" level="project" />
+    <orderEntry type="library" name="Maven: com.zuehlke.carrera:carrera.simulib:0.9.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE" level="project" />

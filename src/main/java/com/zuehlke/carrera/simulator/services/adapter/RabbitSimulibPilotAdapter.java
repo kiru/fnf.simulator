@@ -10,10 +10,10 @@ import com.zuehlke.carrera.simulator.model.PilotInterface;
 /**
  * TODO: currently, this is named rabbit and only rabbit is supported. But the API will support STOMP in the future too
  */
-public class RabbitSimulibApiAdapter implements PilotInterface {
+public class RabbitSimulibPilotAdapter implements PilotInterface {
     private final SimulatorApi api;
 
-    public RabbitSimulibApiAdapter(SimulatorApi api) {
+    public RabbitSimulibPilotAdapter(SimulatorApi api) {
         this.api = api;
     }
 
