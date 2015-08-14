@@ -42,25 +42,25 @@ public class RaceTrackSimulatorSystem {
         this.raceTrackId = raceTrackId;
         this.pilotChannel = pilotChannel;
         this.newsChannel = newsChannel;
-        init(tickDistribution, properties);
+        initializeActorSystem(tickDistribution, properties);
     }
 
-    private void init(RealDistribution tickDistribution, SimulatorProperties properties) {
+    private void initializeActorSystem(RealDistribution tickDistribution, SimulatorProperties properties) {
         LOG.info("Starting racetrack simulator with mean " + (int) tickDistribution.getNumericalMean() + " ms");
         simulator = ActorSystem.create("Simulator");
-        clockActor = setupStopWatch(simulator, tickDistribution, newsChannel);
-        raceTrackActor = setupSimulationSystem(simulator, raceTrackId, properties, pilotChannel, newsChannel);
+        clockActor = createStopWatch(simulator, tickDistribution, newsChannel);
+        raceTrackActor = createSimulationSystem(simulator, raceTrackId, properties, pilotChannel, newsChannel);
         clockActor.tell(new ActorRegistration(raceTrackActor), ActorRef.noSender());
     }
 
-    private ActorRef setupSimulationSystem(ActorSystem simulator, String raceTrackId, SimulatorProperties properties,
-                                           PilotInterface pilotChannel, NewsInterface newsChannel) {
+    private ActorRef createSimulationSystem(ActorSystem simulator, String raceTrackId, SimulatorProperties properties,
+                                            PilotInterface pilotChannel, NewsInterface newsChannel) {
         RaceTrackSimulationActorCreator actorCreator = new RaceTrackSimulationActorCreator(raceTrackId, simulator,
                 properties);
         return actorCreator.create(pilotChannel, newsChannel);
     }
 
-    private ActorRef setupStopWatch(ActorSystem simulator, RealDistribution tickDistribution, NewsInterface
+    private ActorRef createStopWatch(ActorSystem simulator, RealDistribution tickDistribution, NewsInterface
             newsChannel) {
         ClockActorCreator actorCreator = new ClockActorCreator(simulator);
         return actorCreator.create(tickDistribution, newsChannel);
