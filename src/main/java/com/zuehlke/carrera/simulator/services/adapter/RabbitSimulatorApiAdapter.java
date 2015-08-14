@@ -24,8 +24,7 @@ public class RabbitSimulatorApiAdapter implements SimulatorApiAdapter {
 
     @Override
     public void ensureConnection() {
-        // TODO: move rabbit queue location to config
-        api.connect("localhost");
+        api.connect(settings.getRabbitUrl());
     }
 
     @Override

@@ -12,9 +12,7 @@ import com.zuehlke.carrera.api.client.rabbit.RabbitClient;
 import com.zuehlke.carrera.api.seralize.JacksonSerializer;
 import com.zuehlke.carrera.api.seralize.Serializer;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
-import com.zuehlke.carrera.simulator.model.akka.communication.NewsInterface;
 import com.zuehlke.carrera.simulator.services.adapter.RabbitSimulatorApiAdapter;
-import com.zuehlke.carrera.simulator.services.adapter.RabbitSimulibNewsAdapter;
 import com.zuehlke.carrera.simulator.services.adapter.RabbitSimulibPilotAdapter;
 import com.zuehlke.carrera.simulator.services.adapter.SimulatorApiAdapter;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +26,6 @@ public class RabbitCommunicationProtocolConfig {
     @Bean
     public SimulatorApiAdapter simulatorApiAdapter(SimulatorApi api, SimulatorProperties settings) {
         return new RabbitSimulatorApiAdapter(api, settings);
-    }
-
-    @Bean
-    public NewsInterface newsInterface(SimulibNewsApi newsApi) {
-        return new RabbitSimulibNewsAdapter(newsApi);
     }
 
     @Bean

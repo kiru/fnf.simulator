@@ -4,11 +4,11 @@ import com.zuehlke.carrera.api.channel.NewsChannelNames;
 import com.zuehlke.carrera.simulator.model.akka.communication.NewsInterface;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-public class StompSimulibNewsAdapter implements NewsInterface {
+public class SimulibNewsAdapter implements NewsInterface {
     private final NewsChannelNames channelNames = new NewsChannelNames();
     private final SimpMessagingTemplate messagingTemplate;
 
-    public StompSimulibNewsAdapter(SimpMessagingTemplate messagingTemplate) {
+    public SimulibNewsAdapter(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
