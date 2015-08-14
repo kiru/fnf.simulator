@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class SimulatorProperties {
 
     private String relayUrl;
+    private String rabbitUrl;
     private String name;
     private int penalty;
     private int tickPeriod;
@@ -18,7 +19,13 @@ public class SimulatorProperties {
     @NestedConfigurationProperty
     private RazorProperties razor;
 
+    public String getRabbitUrl() {
+        return rabbitUrl;
+    }
 
+    public void setRabbitUrl(String rabbitUrl) {
+        this.rabbitUrl = rabbitUrl;
+    }
 
     public String getRelayUrl() {
         return relayUrl;
