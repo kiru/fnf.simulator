@@ -20,10 +20,10 @@ public class Curve extends TrackSection {
     }
 
     private Anchor calculateFinalAnchor() {
-        return calculateFinalAnchor( this.angle );
+        return calculateFinalAnchor(this.angle);
     }
 
-    public Anchor calculateFinalAnchor ( double someAngle ) {
+    public Anchor calculateFinalAnchor(double someAngle) {
 
         Anchor i = super.initialAnchor;
         double angleR0 = Math.PI * i.getAngle360() / 180;
@@ -34,12 +34,12 @@ public class Curve extends TrackSection {
         double yCenter = i.getPosY() - sgn * radius * Math.cos(angleR0);
 
         // arc angels
-        double ang0 = sgn * Math.PI/2 - angleR0;
+        double ang0 = sgn * Math.PI / 2 - angleR0;
         double ang1 = ang0 - sgn * someAngle * Math.PI / 180;
 
         double newAngle = i.getAngle360() + sgn * someAngle;
 
-        return new Anchor (
+        return new Anchor(
                 newAngle,
                 xCenter + radius * Math.cos(ang1),
                 yCenter + radius * Math.sin(ang1));
@@ -47,7 +47,7 @@ public class Curve extends TrackSection {
 
     @Override
     public double invRadius() {
-        int sign = orientation == ORIENTATION.LEFT? -1 : 1;
+        int sign = orientation == ORIENTATION.LEFT ? -1 : 1;
         return sign / radius;
     }
 
@@ -60,16 +60,11 @@ public class Curve extends TrackSection {
     public Anchor findAnchorAt(double position) {
 
         Anchor ia = initialAnchor;
-        double distance = length - ( lengthUntilEnd - position );
+        double distance = length - (lengthUntilEnd - position);
 
         double deltaAngle = angle * distance / length;
 
         return calculateFinalAnchor(deltaAngle);
-    }
-
-    public enum ORIENTATION {
-        LEFT,
-        RIGHT
     }
 
     public double getRadius() {
@@ -82,5 +77,10 @@ public class Curve extends TrackSection {
 
     public double getAngle() {
         return angle;
+    }
+
+    public enum ORIENTATION {
+        LEFT,
+        RIGHT
     }
 }

@@ -3,18 +3,18 @@ package com.zuehlke.carrera.simulator.model.racetrack;
 import java.util.List;
 
 /**
- *  This class brings the structure of the track to the web client
+ * This class brings the structure of the track to the web client
  */
 public class TrackInfo {
 
-    private List<TrackSection> sections;
     String trackId;
+    private List<TrackSection> sections;
     private double width;
     private double height;
     private Anchor initialAnchor;
 
     public TrackInfo(List<TrackSection> sections, String trackId,
-                     double witdh, double height, Anchor initialAncor ) {
+                     double witdh, double height, Anchor initialAncor) {
         this.sections = sections;
         this.trackId = trackId;
         this.width = witdh;

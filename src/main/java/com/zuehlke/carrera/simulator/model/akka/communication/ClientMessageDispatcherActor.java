@@ -11,6 +11,10 @@ import com.zuehlke.carrera.simulator.model.PilotInterface;
 public class ClientMessageDispatcherActor extends UntypedActor {
     private final PilotInterface connection;
 
+    private ClientMessageDispatcherActor(PilotInterface connection) {
+        this.connection = connection;
+    }
+
     public static Props props(final String raceTrackId, final PilotInterface connection) {
         if (raceTrackId == null) {
             throw new IllegalArgumentException("raceTrackId must not be NULL!");
@@ -21,10 +25,6 @@ public class ClientMessageDispatcherActor extends UntypedActor {
         return Props.create(ClientMessageDispatcherActor.class, () -> {
             return new ClientMessageDispatcherActor(connection);
         });
-    }
-
-    private ClientMessageDispatcherActor(PilotInterface connection) {
-        this.connection = connection;
     }
 
     @Override

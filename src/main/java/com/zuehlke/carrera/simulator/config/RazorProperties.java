@@ -4,7 +4,7 @@ package com.zuehlke.carrera.simulator.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-@ConfigurationProperties(prefix="razor")
+@ConfigurationProperties(prefix = "razor")
 public class RazorProperties {
 
     @NestedConfigurationProperty

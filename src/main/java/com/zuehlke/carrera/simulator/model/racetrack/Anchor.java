@@ -25,6 +25,6 @@ public class Anchor {
     }
 
     public String toString() {
-        return String.format("Anchor from ( x = %.2f, y = %.2f ) at %.0f degrees", posX, posY, angle360 );
+        return String.format("Anchor from ( x = %.2f, y = %.2f ) at %.0f degrees", posX, posY, angle360);
     }
 }

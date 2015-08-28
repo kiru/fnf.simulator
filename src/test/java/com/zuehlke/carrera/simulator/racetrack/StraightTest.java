@@ -10,10 +10,10 @@ import org.junit.Test;
 public class StraightTest {
 
     @Test
-    public  void testAnchorAtPos () {
+    public void testAnchorAtPos() {
 
         TrackDesign design = new TrackDesign();
-        Anchor start = new Anchor( 45, 0, 0 );
+        Anchor start = new Anchor(45, 0, 0);
         design.setInitialAnchor(start);
         design.straight(10).create();
         Straight straight = (Straight) design.getTrackData().get(0);
