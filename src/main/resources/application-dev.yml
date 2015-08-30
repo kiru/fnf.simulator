@@ -2,13 +2,13 @@ spring:
   application:
     name: sim02
 
-server:       # Note that the port MUST be 80 to work in SC cloud
-  port: 80    # Use for SC cloud deployment!
+server:
+  port: 8090
 
 simulator:
-  name: sim02  # Id of this simulator. Should be unique.
-  relayUrl:  ws://relay2.beta.swisscloud.io/ws/rest/messages # Address of relay in SC cloud !
-  rabbitUrl: undefined # rabbit queue hosted somewhere in cloud as well
+  name: sim02 # Id of this simulator. Should be unique.
+  relayUrl: ws://localhost:8085/ws/rest/messages
+  rabbitUrl: localhost
 
   # The ticks that run the simulator. Gaussian distribution to model latency
   tickPeriod: 20

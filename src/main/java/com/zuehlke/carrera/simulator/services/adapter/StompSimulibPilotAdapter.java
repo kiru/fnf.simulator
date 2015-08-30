@@ -1,4 +1,4 @@
-package com.zuehlke.carrera.simulator.services;
+package com.zuehlke.carrera.simulator.services.adapter;
 
 import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
 import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
@@ -7,13 +7,11 @@ import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
-/**
- */
-public class RelayToPilotAdapter implements PilotInterface {
+public class StompSimulibPilotAdapter implements PilotInterface {
 
     private final RaceTrackToRelayConnection adaptee;
 
-    public RelayToPilotAdapter ( RaceTrackToRelayConnection connection ) {
+    public StompSimulibPilotAdapter(RaceTrackToRelayConnection connection) {
         this.adaptee = connection;
     }
 
