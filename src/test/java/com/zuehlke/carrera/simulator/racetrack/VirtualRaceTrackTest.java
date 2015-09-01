@@ -26,12 +26,12 @@ public class VirtualRaceTrackTest implements TrackEventListener {
         Gyro_z_Properties gyro_z_properties = new Gyro_z_Properties();
         gyro_z_properties.setOffset(5);
         gyro_z_properties.setSigmaStationary(1);
-                gyro_z_properties.setSigma0(130);
-                gyro_z_properties.setFloatingAverageSize(5);
-                gyro_z_properties.setFactorDuration1(40000);
-                gyro_z_properties.setAmplitudeSigmaContribution(0.083333);
-                gyro_z_properties.setAmplitudeFactorIntoCurve(600);
-                gyro_z_properties.setAmplitudeFactorWithinCurve(400);
+        gyro_z_properties.setSigma0(130);
+        gyro_z_properties.setFloatingAverageSize(5);
+        gyro_z_properties.setFactorDuration1(40000);
+        gyro_z_properties.setAmplitudeSigmaContribution(0.083333);
+        gyro_z_properties.setAmplitudeFactorIntoCurve(600);
+        gyro_z_properties.setAmplitudeFactorWithinCurve(400);
 
         razorProperties.setGyroz(gyro_z_properties);
 
@@ -74,16 +74,16 @@ public class VirtualRaceTrackTest implements TrackEventListener {
         printSensorValues(event, event.getSensorEvent().getG()[2]);
     }
 
-    private void printSensorValues(TrackEvent event, double value){
-        String buffer = String.format ("%6d:       v: %4.0f", System.currentTimeMillis() - start, event.getV());
-        long k = (long)(20 + 60.0 * value / 8000);
-        for ( int i = 0; i < 100; i ++ ) {
+    private void printSensorValues(TrackEvent event, double value) {
+        String buffer = String.format("%6d:       v: %4.0f", System.currentTimeMillis() - start, event.getV());
+        long k = (long) (20 + 60.0 * value / 8000);
+        for (int i = 0; i < 100; i++) {
             String symbol = " ";
-            if ( i == k ) {
+            if (i == k) {
                 symbol = "*";
             }
             buffer = buffer + symbol;
         }
-        System.out.println ( buffer );
+        System.out.println(buffer);
     }
 }

@@ -1,7 +1,7 @@
 package com.zuehlke.carrera.simulator.model.racetrack;
 
 /**
- *  physical coordinates position and velocity
+ * physical coordinates position and velocity
  */
 public class Coordinates {
 

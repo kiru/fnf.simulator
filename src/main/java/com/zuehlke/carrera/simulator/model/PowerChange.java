@@ -1,7 +1,7 @@
 package com.zuehlke.carrera.simulator.model;
 
 /**
- *  used only by the simulator itself
+ * used only by the simulator itself
  */
 public class PowerChange {
     private final int delta;

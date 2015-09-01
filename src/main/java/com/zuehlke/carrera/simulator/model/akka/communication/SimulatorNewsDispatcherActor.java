@@ -10,17 +10,17 @@ public class SimulatorNewsDispatcherActor extends UntypedActor {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorNewsDispatcherActor.class);
     private final NewsInterface newsInterface;
 
-    public static Props props(NewsInterface newsInterface) {
-        return Props.create(SimulatorNewsDispatcherActor.class, () -> {
-            return new SimulatorNewsDispatcherActor(newsInterface);
-        });
-    }
-
     private SimulatorNewsDispatcherActor(NewsInterface newsInterface) {
         if (newsInterface == null) {
             throw new IllegalArgumentException("newsInterface must not be null!");
         }
         this.newsInterface = newsInterface;
+    }
+
+    public static Props props(NewsInterface newsInterface) {
+        return Props.create(SimulatorNewsDispatcherActor.class, () -> {
+            return new SimulatorNewsDispatcherActor(newsInterface);
+        });
     }
 
     @Override

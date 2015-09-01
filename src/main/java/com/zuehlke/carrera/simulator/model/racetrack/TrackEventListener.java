@@ -11,6 +11,7 @@ public interface TrackEventListener extends EventListener {
 
     /**
      * Occurs when a sensor event has been received
+     *
      * @param event: the event to listen to
      */
     void onTrackEvent(TrackEvent event);

@@ -16,6 +16,10 @@ public class ClockActor extends UntypedActor {
     private final TickPeriodGenerator tickPeriodGenerator;
     private boolean running = false;
 
+    private ClockActor(TickPeriodGenerator tickPeriodGenerator) {
+        this.tickPeriodGenerator = tickPeriodGenerator;
+    }
+
     public static Props props(int tickPeriodMillis) {
         return Props.create(ClockActor.class, () -> {
             return new ClockActor(new ConstantTickPeriodGenerator(tickPeriodMillis));
@@ -26,10 +30,6 @@ public class ClockActor extends UntypedActor {
         return Props.create(ClockActor.class, () -> {
             return new ClockActor(new RealDistributionTickPeriodGenerator(clockTickDistribution));
         });
-    }
-
-    private ClockActor(TickPeriodGenerator tickPeriodGenerator) {
-        this.tickPeriodGenerator = tickPeriodGenerator;
     }
 
     @Override

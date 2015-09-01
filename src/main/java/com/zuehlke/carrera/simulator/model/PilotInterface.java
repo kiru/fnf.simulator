@@ -6,9 +6,9 @@ import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 
 /**
- *  The interface to the pilot. Describes what messages or event a pilot can deal with
- *  A physical connection client that supposed to connect a simulator to a relay station
- *  must implement this.
+ * The interface to the pilot. Describes what messages or event a pilot can deal with
+ * A physical connection client that supposed to connect a simulator to a relay station
+ * must implement this.
  */
 public interface PilotInterface {
 

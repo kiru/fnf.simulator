@@ -28,7 +28,10 @@ public class VirtualRaceTrack {
     private final List<PenaltyListener> penaltyListeners = new ArrayList<>();
     private final List<RoundPassedListener> roundPassedListeners = new ArrayList<>();
     private final String raceTrackId;
-
+    private final int[] acc = new int[3];
+    private final int[] gyr = new int[3];
+    private final int[] mag = new int[3];
+    private final Map<String, TrackDesign> trackDesignMap = new HashMap<>();
     private double position = 0;
     private double velocity = 0;
     private int currentPower = 0;
@@ -41,12 +44,6 @@ public class VirtualRaceTrack {
     private FloatingAverage averageVelocity = new FloatingAverage(FLOATING_VELOCITY_AVERAGE_SIZE);
     private double lastMeasuredVelocity = 0;
     private SimulatorProperties properties;
-
-    private final int[] acc = new int[3];
-    private final int[] gyr = new int[3];
-    private final int[] mag = new int[3];
-
-    private final Map<String, TrackDesign> trackDesignMap = new HashMap<>();
 
     public VirtualRaceTrack(String raceTrackId, TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
         this.properties = properties;
@@ -226,11 +223,6 @@ public class VirtualRaceTrack {
         position = 0;
     }
 
-    public void setPower(int p) {
-        currentPower = p;
-
-    }
-
     public void reset() {
         position = 0;
         velocity = 0;
@@ -240,6 +232,11 @@ public class VirtualRaceTrack {
 
     public int getPower() {
         return currentPower;
+    }
+
+    public void setPower(int p) {
+        currentPower = p;
+
     }
 
     public void changePower(int delta) {
@@ -297,8 +294,10 @@ public class VirtualRaceTrack {
 
         trackDesignMap.put("Berlin",
                 new TrackDesign()
-                        .straight(100).lightBarrier("BA01", 20, 300).asRoundStart().curve(30, -4).lightBarrier("BA02", 20, 300)
-                        .straight(200).lightBarrier("BA03", 20, 300).curve(30, -4).lightBarrier("BA04", 20, 300).straight(100).create());
+                        .straight(100).lightBarrier("BA01", 20, 300).asRoundStart().curve(30, -4).lightBarrier
+                        ("BA02", 20, 300)
+                        .straight(200).lightBarrier("BA03", 20, 300).curve(30, -4).lightBarrier("BA04", 20, 300)
+                        .straight(100).create());
 
         double radius = 28;
         trackDesignMap.put("Oerlikon",
@@ -341,7 +340,7 @@ public class VirtualRaceTrack {
                         .straight(160)
                         .lightBarrier("48BD", 20, 300)
                         .curve(radius, -2)
-                        //.straight(100) this would be the originals
+                                //.straight(100) this would be the originals
                         .straight(90)
                         .lightBarrier("dunnoyet", 20, 300)
                         .curve(radius, 2)
@@ -360,7 +359,7 @@ public class VirtualRaceTrack {
                         .curve(radius, -4)
                         .lightBarrier("", 20, 300)
                         .straight(335)
-                        //.straight(360) this would be the original
+                                //.straight(360) this would be the original
                         .lightBarrier("", 20, 300)
                         .straight(70)
                         .lightBarrier("", 20, 300)

@@ -9,7 +9,7 @@ public class FloatingAverageTest {
     private static final double delta = 0.00001;
 
     @Test
-    public void testIt () {
+    public void testIt() {
 
         FloatingAverage f = new FloatingAverage(4);
 

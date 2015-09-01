@@ -10,14 +10,14 @@ public class TickEventDispatcherActor extends UntypedActor {
     private static final Logger LOG = LoggerFactory.getLogger(TickEventDispatcherActor.class);
     private final NewsInterface newsInterface;
 
+    private TickEventDispatcherActor(NewsInterface newsInterface) {
+        this.newsInterface = newsInterface;
+    }
+
     public static Props props(NewsInterface newsInterface) {
         return Props.create(TickEventDispatcherActor.class, () -> {
             return new TickEventDispatcherActor(newsInterface);
         });
-    }
-
-    private TickEventDispatcherActor(NewsInterface newsInterface) {
-        this.newsInterface = newsInterface;
     }
 
     @Override
