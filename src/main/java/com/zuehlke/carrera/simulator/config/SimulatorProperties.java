@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Simulator Settings
  */
-@ConfigurationProperties(prefix="simulator") // see: /resources/application.yml
+@ConfigurationProperties(prefix = "simulator") // see: /resources/application.yml
 public class SimulatorProperties {
 
     private String relayUrl;
@@ -31,24 +31,24 @@ public class SimulatorProperties {
         return relayUrl;
     }
 
+    public void setRelayUrl(String relayUrl) {
+        this.relayUrl = relayUrl;
+    }
+
     public int getTickPeriod() {
         return tickPeriod;
+    }
+
+    public void setTickPeriod(int tickPeriod) {
+        this.tickPeriod = tickPeriod;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setRelayUrl(String relayUrl) {
-        this.relayUrl = relayUrl;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setTickPeriod(int tickPeriod) {
-        this.tickPeriod = tickPeriod;
     }
 
     public double getSigma() {

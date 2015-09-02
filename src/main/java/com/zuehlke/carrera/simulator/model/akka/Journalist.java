@@ -12,7 +12,7 @@ public class Journalist extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
 
-        if ( message instanceof DataEventNews) {
+        if (message instanceof DataEventNews) {
             handleNews((DataEventNews) message);
         } else {
             unhandled(message);
@@ -23,32 +23,32 @@ public class Journalist extends UntypedActor {
     private void handleNews(DataEventNews message) {
         SensorEvent event = message.getEvent();
 
-        float accelerationY =  event.getA()[1];
+        float accelerationY = event.getA()[1];
 
         String speed = printSpeed(message.getVelocity());
-        String buffer = String.format( "%8.4f %40s - %8.4f", message.getVelocity(), speed, accelerationY);
-        long k = (long)(70 + 8 * accelerationY);
-        for ( int i = 0; i < 140; i ++ ) {
+        String buffer = String.format("%8.4f %40s - %8.4f", message.getVelocity(), speed, accelerationY);
+        long k = (long) (70 + 8 * accelerationY);
+        for (int i = 0; i < 140; i++) {
             String symbol = " ";
-            if ( i == k ) {
+            if (i == k) {
                 symbol = ".";
             } else if (i == 70) {
                 symbol = "|";
             }
             buffer = buffer + symbol;
         }
-        System.out.println ( buffer );
+        System.out.println(buffer);
 
     }
 
-    private String printSpeed ( double speed ) {
+    private String printSpeed(double speed) {
         String result = "";
-         for ( int i = 0; i < 40; i++ ) {
-             if ( speed * 5.0 > i ) {
-                 result = result + "#";
-             } else {
-                 result = result + " ";
-             }
+        for (int i = 0; i < 40; i++) {
+            if (speed * 5.0 > i) {
+                result = result + "#";
+            } else {
+                result = result + " ";
+            }
         }
         return result;
     }

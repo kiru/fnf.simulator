@@ -19,18 +19,10 @@ import com.zuehlke.carrera.simulator.model.racetrack.VirtualRaceTrack;
 
 /**
  * Race track Actor for the simulation.
- *
+ * <p>
  * Created by wgiersche on 06/09/14.
  */
 public class RaceTrackSimulationActor extends UntypedActor {
-
-    public static Props props(final String trackId, final ActorRef toPlayerDispatcher, final ActorRef newsDispatcher,
-                              TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
-
-        return Props.create(RaceTrackSimulationActor.class, () ->
-                new RaceTrackSimulationActor( trackId, toPlayerDispatcher, newsDispatcher,
-                        trackPhysicsModel, properties ));
-    }
 
     private final VirtualRaceTrack track;
     private final ActorRef newsDispatcher;
@@ -39,15 +31,13 @@ public class RaceTrackSimulationActor extends UntypedActor {
     private long penaltyStart;
     private boolean penaltyPhase;
     private SimulatorProperties properties;
-
-
     public RaceTrackSimulationActor(String trackId, ActorRef pilot, ActorRef newsDispatcher,
                                     TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
         this.newsDispatcher = newsDispatcher;
         this.pilot = pilot;
         this.properties = properties;
 
-        track = new VirtualRaceTrack(trackId, trackPhysicsModel, properties );
+        track = new VirtualRaceTrack(trackId, trackPhysicsModel, properties);
         track.defaultDesign();
         track.addListener((TrackEvent event) -> {
             getSelf().tell(event.getSensorEvent(), ActorRef.noSender());
@@ -59,49 +49,56 @@ public class RaceTrackSimulationActor extends UntypedActor {
             getSelf().tell(penalty, ActorRef.noSender());
         });
         track.addListener((RoundPassedMessage roundPassed) -> {
-           getSelf().tell(roundPassed, ActorRef.noSender());
+            getSelf().tell(roundPassed, ActorRef.noSender());
         });
     }
 
+    public static Props props(final String trackId, final ActorRef toPlayerDispatcher, final ActorRef newsDispatcher,
+                              TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
+
+        return Props.create(RaceTrackSimulationActor.class, () ->
+                new RaceTrackSimulationActor(trackId, toPlayerDispatcher, newsDispatcher,
+                        trackPhysicsModel, properties));
+    }
 
     @Override
     public void onReceive(Object message) throws Exception {
 
-        if ( message instanceof PowerControl) {
+        if (message instanceof PowerControl) {
             handlePowerControl((PowerControl) message);
-        } else if ( message instanceof PowerChange) {
+        } else if (message instanceof PowerChange) {
             handlePowerChange((PowerChange) message);
-        } else if ( message instanceof Reset ) {
+        } else if (message instanceof Reset) {
             handleReset();
-        } else if ( message instanceof RaceStartMessage ) {
+        } else if (message instanceof RaceStartMessage) {
             handleRaceStart((RaceStartMessage) message);
-        } else if ( message instanceof RaceStopMessage ) {
+        } else if (message instanceof RaceStopMessage) {
             handleRaceStop((RaceStopMessage) message);
-        } else if ( message instanceof Tick) {
+        } else if (message instanceof Tick) {
             handleClockTick((Tick) message);
-        } else if ( message instanceof CarPosition) {
+        } else if (message instanceof CarPosition) {
             handleCarPosition((CarPosition) message);
-        } else if ( message instanceof ActorRegistration) {
+        } else if (message instanceof ActorRegistration) {
             handlePlayerRegistration((ActorRegistration) message);
-        } else if ( message instanceof SensorEvent ) {
+        } else if (message instanceof SensorEvent) {
             handleTrackEvent((SensorEvent) message);
-        } else if ( message instanceof VelocityMessage ) {
+        } else if (message instanceof VelocityMessage) {
             handleVelocityMessage((VelocityMessage) message);
-        } else if ( message instanceof PenaltyMessage ) {
+        } else if (message instanceof PenaltyMessage) {
             handlePenaltyMessage((PenaltyMessage) message);
-        } else if ( message instanceof RoundPassedMessage ) {
-            handleRoundPassedMessage ( (RoundPassedMessage)message );
-        } else if ( message instanceof QueryTrackDesign ) {
+        } else if (message instanceof RoundPassedMessage) {
+            handleRoundPassedMessage((RoundPassedMessage) message);
+        } else if (message instanceof QueryTrackDesign) {
             handleQueryTrackDesign();
-        } else if ( message instanceof QuerySelectDesign ) {
-            handleQuerySelectDesign (( QuerySelectDesign) message );
+        } else if (message instanceof QuerySelectDesign) {
+            handleQuerySelectDesign((QuerySelectDesign) message);
         } else {
             unhandled(message);
         }
     }
 
     private void handlePenaltyMessage(PenaltyMessage message) {
-        if ( pilot != null ) {
+        if (pilot != null) {
             pilot.tell(message, getSelf());
             penaltyPhase = true;
             penaltyStart = System.currentTimeMillis();
@@ -112,7 +109,7 @@ public class RaceTrackSimulationActor extends UntypedActor {
     }
 
     private void handleQuerySelectDesign(QuerySelectDesign message) {
-        track.selectDesign ( message.getTrackDesign());
+        track.selectDesign(message.getTrackDesign());
         handleQueryTrackDesign();
     }
 
@@ -126,19 +123,19 @@ public class RaceTrackSimulationActor extends UntypedActor {
     }
 
     private void handleVelocityMessage(VelocityMessage message) {
-        if ( pilot != null ) {
+        if (pilot != null) {
             pilot.tell(message, getSelf());
         }
     }
 
-    private void handleRoundPassedMessage ( RoundPassedMessage message ) {
-        if ( pilot != null ) {
+    private void handleRoundPassedMessage(RoundPassedMessage message) {
+        if (pilot != null) {
             pilot.tell(message, getSelf());
         }
     }
 
     private void handleTrackEvent(SensorEvent event) {
-        if ( pilot != null ) {
+        if (pilot != null) {
             pilot.tell(event, getSelf());
         }
         dispatchNews(event);
@@ -146,6 +143,7 @@ public class RaceTrackSimulationActor extends UntypedActor {
 
     /**
      * register internal player with track and vice versa
+     *
      * @param registration the registration message
      */
     private void handlePlayerRegistration(ActorRegistration registration) {
@@ -161,8 +159,8 @@ public class RaceTrackSimulationActor extends UntypedActor {
         track.forward(tick.getMillies());
     }
 
-    private void dispatchNews ( SensorEvent event ) {
-        if ( newsDispatcher != null ) {
+    private void dispatchNews(SensorEvent event) {
+        if (newsDispatcher != null) {
 
             newsDispatcher.tell(new DataEventNews(
                             currentTeam,
@@ -180,10 +178,10 @@ public class RaceTrackSimulationActor extends UntypedActor {
         currentTeam = control.getTeamId();
 
         int newPower = control.getP();
-        if ( penaltyPhase && ( System.currentTimeMillis() < penaltyStart + properties.getPenalty())) {
+        if (penaltyPhase && (System.currentTimeMillis() < penaltyStart + properties.getPenalty())) {
             newPower = 0;
         }
-        if ( newPower >= 0){
+        if (newPower >= 0) {
             track.setPower(newPower);
         }
     }
@@ -192,11 +190,11 @@ public class RaceTrackSimulationActor extends UntypedActor {
         track.changePower(message.getDelta());
     }
 
-    private void handleRaceStart ( RaceStartMessage message ) {
+    private void handleRaceStart(RaceStartMessage message) {
         track.reset();
     }
 
-    private void handleRaceStop ( RaceStopMessage message ) {
+    private void handleRaceStop(RaceStopMessage message) {
     }
 
 }

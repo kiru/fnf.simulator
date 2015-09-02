@@ -1,7 +1,6 @@
 package com.zuehlke.carrera.simulator.model.akka.messages;
 
 /**
- *
  * Created by paba on 9/23/14.
  */
 public class EndpointRegistration {

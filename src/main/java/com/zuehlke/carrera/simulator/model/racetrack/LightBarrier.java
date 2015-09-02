@@ -22,12 +22,12 @@ public class LightBarrier extends Straight {
         return speedLimit;
     }
 
-    public void setRoundStart(boolean roundStart) {
-        this.roundStart = roundStart;
-    }
-
     public boolean isRoundStart() {
         return roundStart;
+    }
+
+    public void setRoundStart(boolean roundStart) {
+        this.roundStart = roundStart;
     }
 
 

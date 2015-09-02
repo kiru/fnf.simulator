@@ -7,7 +7,7 @@ import com.zuehlke.carrera.simulator.model.racetrack.Anchor;
 /**
  * Holds together information of the (simulated) racetrack
  * to allow a client to draw / update the current relay situation.
- *
+ * <p>
  * Created by wgiersche on 06/09/14.
  */
 public class DataEventNews {
@@ -19,7 +19,8 @@ public class DataEventNews {
     private final String teamId;
     private final int roundNumber;
 
-    public DataEventNews( String teamId, SensorEvent event, double velocity, int currentPower, Anchor position, int roundNumber ) {
+    public DataEventNews(String teamId, SensorEvent event, double velocity, int currentPower, Anchor position, int
+            roundNumber) {
         this.teamId = teamId;
         this.event = event;
         this.velocity = velocity;
