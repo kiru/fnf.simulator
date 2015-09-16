@@ -1,6 +1,6 @@
 package com.zuehlke.carrera.simulator.racetrack;
 
-import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
+import com.zuehlke.carrera.relayapi.messages.RoundTimeMessage;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.config.Gyro_z_Properties;
 import com.zuehlke.carrera.simulator.config.RazorProperties;
@@ -55,9 +55,9 @@ public class VirtualRaceTrackTest implements TrackEventListener {
             System.out.println();
         });
 
-        track.addListener((RoundPassedMessage message) -> {
+        track.addListener((RoundTimeMessage message) -> {
             System.out.println();
-            System.out.println(" Round passed at: " + message.getTimeStamp());
+            System.out.println(" Round passed at: " + message.getTimestamp());
             System.out.println();
         });
 

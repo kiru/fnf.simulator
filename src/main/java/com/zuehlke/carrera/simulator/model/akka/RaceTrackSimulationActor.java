@@ -5,10 +5,7 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
-import com.zuehlke.carrera.simulator.model.PowerChange;
-import com.zuehlke.carrera.simulator.model.QuerySelectDesign;
-import com.zuehlke.carrera.simulator.model.QueryTrackDesign;
-import com.zuehlke.carrera.simulator.model.Reset;
+import com.zuehlke.carrera.simulator.model.*;
 import com.zuehlke.carrera.simulator.model.akka.clock.Tick;
 import com.zuehlke.carrera.simulator.model.akka.messages.ActorRegistration;
 import com.zuehlke.carrera.simulator.model.akka.messages.CarPosition;
@@ -48,8 +45,8 @@ public class RaceTrackSimulationActor extends UntypedActor {
         track.addListener((PenaltyMessage penalty) -> {
             getSelf().tell(penalty, ActorRef.noSender());
         });
-        track.addListener((RoundPassedMessage roundPassed) -> {
-            getSelf().tell(roundPassed, ActorRef.noSender());
+        track.addListener((RoundTimeMessage roundTime) -> {
+            getSelf().tell(roundTime, ActorRef.noSender());
         });
     }
 
@@ -86,12 +83,16 @@ public class RaceTrackSimulationActor extends UntypedActor {
             handleVelocityMessage((VelocityMessage) message);
         } else if (message instanceof PenaltyMessage) {
             handlePenaltyMessage((PenaltyMessage) message);
-        } else if (message instanceof RoundPassedMessage) {
-            handleRoundPassedMessage((RoundPassedMessage) message);
+        } else if (message instanceof RoundTimeMessage) {
+            handleRoundPassedMessage((RoundTimeMessage) message);
         } else if (message instanceof QueryTrackDesign) {
             handleQueryTrackDesign();
         } else if (message instanceof QuerySelectDesign) {
             handleQuerySelectDesign((QuerySelectDesign) message);
+        } else if ( message instanceof PilotInterface ) {
+            pilot.forward(message, getContext());
+        } else if ( "ENSURE_CONNECTION".equals ( message )) {
+            pilot.forward(message, getContext());
         } else {
             unhandled(message);
         }
@@ -128,7 +129,7 @@ public class RaceTrackSimulationActor extends UntypedActor {
         }
     }
 
-    private void handleRoundPassedMessage(RoundPassedMessage message) {
+    private void handleRoundPassedMessage(RoundTimeMessage message) {
         if (pilot != null) {
             pilot.tell(message, getSelf());
         }

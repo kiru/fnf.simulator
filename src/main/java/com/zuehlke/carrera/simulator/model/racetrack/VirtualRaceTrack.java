@@ -1,7 +1,7 @@
 package com.zuehlke.carrera.simulator.model.racetrack;
 
 import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
-import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
+import com.zuehlke.carrera.relayapi.messages.RoundTimeMessage;
 import com.zuehlke.carrera.relayapi.messages.SensorEvent;
 import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
@@ -26,7 +26,7 @@ public class VirtualRaceTrack {
     private final List<TrackEventListener> trackEventListeners = new ArrayList<>();
     private final List<VelocityListener> velocityListeners = new ArrayList<>();
     private final List<PenaltyListener> penaltyListeners = new ArrayList<>();
-    private final List<RoundPassedListener> roundPassedListeners = new ArrayList<>();
+    private final List<RoundTimeListener> roundPassedListeners = new ArrayList<>();
     private final String raceTrackId;
     private final int[] acc = new int[3];
     private final int[] gyr = new int[3];
@@ -92,7 +92,7 @@ public class VirtualRaceTrack {
         penaltyListeners.add(listener);
     }
 
-    public void addListener(RoundPassedListener listener) {
+    public void addListener(RoundTimeListener listener) {
         roundPassedListeners.add(listener);
     }
 
@@ -208,8 +208,8 @@ public class VirtualRaceTrack {
     }
 
     private void fireRoundPassedMessage() {
-        RoundPassedMessage message = new RoundPassedMessage(raceTrackId, System.currentTimeMillis());
-        for (RoundPassedListener li : roundPassedListeners) {
+        RoundTimeMessage message = new RoundTimeMessage(raceTrackId, System.currentTimeMillis());
+        for (RoundTimeListener li : roundPassedListeners) {
             li.onRoundPassed(message);
         }
     }
@@ -228,6 +228,7 @@ public class VirtualRaceTrack {
         velocity = 0;
         currentPower = 0;
         lastMeasuredVelocity = 0;
+        roundNumber = 1;
     }
 
     public int getPower() {

@@ -2,14 +2,12 @@ package com.zuehlke.carrera.simulator.model.akka.communication;
 
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
-import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
-import com.zuehlke.carrera.relayapi.messages.SensorEvent;
-import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
 public class ClientMessageDispatcherActor extends UntypedActor {
-    private final PilotInterface connection;
+
+    private PilotInterface connection;
 
     private ClientMessageDispatcherActor(PilotInterface connection) {
         this.connection = connection;
@@ -35,8 +33,10 @@ public class ClientMessageDispatcherActor extends UntypedActor {
             handleVelocity((VelocityMessage) message);
         } else if (message instanceof PenaltyMessage) {
             handlePenalty((PenaltyMessage) message);
-        } else if (message instanceof RoundPassedMessage) {
-            handleRoundPassed((RoundPassedMessage) message);
+        } else if (message instanceof RoundTimeMessage) {
+            handleRoundTime((RoundTimeMessage) message);
+        } else if ( message instanceof PilotInterface ) {
+            this.connection = (PilotInterface) message;
         } else {
             unhandled(message);
         }
@@ -54,7 +54,7 @@ public class ClientMessageDispatcherActor extends UntypedActor {
         connection.send(message);
     }
 
-    private void handleRoundPassed(RoundPassedMessage message) {
+    private void handleRoundTime(RoundTimeMessage message) {
         connection.send(message);
     }
 }

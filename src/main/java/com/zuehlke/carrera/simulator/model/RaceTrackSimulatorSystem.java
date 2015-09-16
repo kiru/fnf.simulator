@@ -2,9 +2,8 @@ package com.zuehlke.carrera.simulator.model;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import com.zuehlke.carrera.relayapi.messages.PowerControl;
-import com.zuehlke.carrera.relayapi.messages.RaceStartMessage;
-import com.zuehlke.carrera.relayapi.messages.RaceStopMessage;
+import com.zuehlke.carrera.connection.TowardsPilotsConnection;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
 import com.zuehlke.carrera.simulator.model.akka.AkkaUtils;
 import com.zuehlke.carrera.simulator.model.akka.clock.StartClock;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class RaceTrackSimulatorSystem {
     private static final Logger LOG = LoggerFactory.getLogger(RaceTrackSimulatorSystem.class);
     private final String raceTrackId;
-    private final PilotInterface pilotChannel;
+    private PilotInterface pilotChannel;
     private final NewsInterface newsChannel;
     private ActorSystem simulator;
     private ActorRef raceTrackActor;
@@ -113,5 +112,42 @@ public class RaceTrackSimulatorSystem {
     public TrackDesign selectDesign(String trackDesign) {
         // select design and make sure we don't return before it's done.
         return AkkaUtils.askActor(getClass(), TrackDesign.class, raceTrackActor, new QuerySelectDesign(trackDesign));
+    }
+
+    public void register (TowardsPilotsConnection connection) {
+
+        this.pilotChannel = new PilotInterface() {
+            @Override
+            public void send(SensorEvent message) {
+                connection.sendSensorEvent(message);
+            }
+
+            @Override
+            public void send(VelocityMessage message) {
+                connection.sendVelocity(message);
+            }
+
+            @Override
+            public void send(PenaltyMessage message) {
+                connection.sendPenalty(message);
+            }
+
+            @Override
+            public void send(RoundTimeMessage message) {
+                connection.sendRoundPassed(message);
+            }
+
+            @Override
+            public void ensureConnection(String url) {
+                connection.connect(url);
+            }
+
+        };
+
+        raceTrackActor.tell ( pilotChannel, ActorRef.noSender() );
+    }
+
+    public void ensureConnection ( String url ) {
+        pilotChannel.ensureConnection( url );
     }
 }
