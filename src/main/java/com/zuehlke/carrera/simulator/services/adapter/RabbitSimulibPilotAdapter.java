@@ -1,10 +1,7 @@
 package com.zuehlke.carrera.simulator.services.adapter;
 
 import com.zuehlke.carrera.api.SimulatorApi;
-import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
-import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
-import com.zuehlke.carrera.relayapi.messages.SensorEvent;
-import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
 /**
@@ -33,7 +30,12 @@ public class RabbitSimulibPilotAdapter implements PilotInterface {
     }
 
     @Override
-    public void send(RoundPassedMessage roundPassedMessage) {
-        api.roundPassed(roundPassedMessage);
+    public void send(RoundTimeMessage roundTimeMessage) {
+        api.roundPassed(roundTimeMessage);
+    }
+
+    @Override
+    public void ensureConnection(String url) {
+        // currently not implemented
     }
 }

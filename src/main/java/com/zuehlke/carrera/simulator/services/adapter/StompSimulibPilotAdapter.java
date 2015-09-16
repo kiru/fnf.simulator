@@ -1,10 +1,7 @@
 package com.zuehlke.carrera.simulator.services.adapter;
 
 import com.zuehlke.carrera.racetrack.client.RaceTrackToRelayConnection;
-import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
-import com.zuehlke.carrera.relayapi.messages.RoundPassedMessage;
-import com.zuehlke.carrera.relayapi.messages.SensorEvent;
-import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.model.PilotInterface;
 
 public class StompSimulibPilotAdapter implements PilotInterface {
@@ -31,7 +28,15 @@ public class StompSimulibPilotAdapter implements PilotInterface {
     }
 
     @Override
-    public void send(RoundPassedMessage message) {
-        adaptee.send(message);
+    public void send(RoundTimeMessage message) {
+        /* We chose to implement the pilot interface. But we can't send RoundTimeMessages
+         * to the relay, because it's the relay to calculate and send them to the pilot.
+         */
+        throw new UnsupportedOperationException("NOT SUPPORTED");
+    }
+
+    @Override
+    public void ensureConnection(String url) {
+        adaptee.ensureConnection();
     }
 }
