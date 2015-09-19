@@ -28,6 +28,8 @@ public class RaceTrackSimulationActor extends UntypedActor {
     private long penaltyStart;
     private boolean penaltyPhase;
     private SimulatorProperties properties;
+    private RoundTimeMessage previousRoundTimeMessage;
+
     public RaceTrackSimulationActor(String trackId, ActorRef pilot, ActorRef newsDispatcher,
                                     TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
         this.newsDispatcher = newsDispatcher;
@@ -130,6 +132,11 @@ public class RaceTrackSimulationActor extends UntypedActor {
     }
 
     private void handleRoundPassedMessage(RoundTimeMessage message) {
+        if ( previousRoundTimeMessage != null ) {
+            long duration = message.getTimestamp() - previousRoundTimeMessage.getTimestamp();
+            message = new RoundTimeMessage(message.getTrack(), currentTeam, message.getTimestamp(), duration );
+        }
+        previousRoundTimeMessage = message;
         if (pilot != null) {
             pilot.tell(message, getSelf());
         }
