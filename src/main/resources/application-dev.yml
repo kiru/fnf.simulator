@@ -3,11 +3,11 @@ spring:
     name: sim02
 
 server:
-  port: 8090
+  port: 8083
 
 simulator:
   name: sim02 # Id of this simulator. Should be unique.
-  relayUrl: ws://localhost:8085/ws/rest/messages
+  relayUrl: ws://localhost:8090/ws/rest/messages
   rabbitUrl: localhost
 
   # The ticks that run the simulator. Gaussian distribution to model latency

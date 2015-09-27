@@ -3,7 +3,7 @@ spring:
     name: sim02
 
 server:       # Note that the port MUST be 80 to work in SC cloud
-  port: 80    # Use for SC cloud deployment!
+  port: 8083    # Use for SC cloud deployment!
 
 simulator:
   name: sim02  # Id of this simulator. Should be unique.
