@@ -1,10 +1,9 @@
-# Java
 *.class
-*.jar
+.jar
+.war
+.ear
 
-# IntelliJ
 .idea/
 *.iml
 
-# Maven
 target/
