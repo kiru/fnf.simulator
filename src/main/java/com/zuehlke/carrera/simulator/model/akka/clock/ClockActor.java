@@ -6,11 +6,16 @@ import akka.actor.UntypedActor;
 import com.zuehlke.carrera.simulator.model.akka.messages.ActorRegistration;
 import org.apache.commons.math3.distribution.RealDistribution;
 import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The sole purpose of this actor is to manage a clock and send ticks periodically
+ * ( which are generated from given TickPeriodGenerator ) to all registered subscribers
+ */
 public class ClockActor extends UntypedActor {
     private final List<ActorRef> tickSubscribers = new ArrayList<>();
     private final TickPeriodGenerator tickPeriodGenerator;
@@ -73,8 +78,11 @@ public class ClockActor extends UntypedActor {
 
     private void sendTickNotification() {
         int period = tickPeriodGenerator.nextTick();
-        getContext().system().scheduler().scheduleOnce(
-                Duration.create(period, TimeUnit.MILLISECONDS),
-                getSelf(), new Tick(period), getContext().dispatcher(), null);
+
+        FiniteDuration timeToNextTickInMs = Duration.create(period, TimeUnit.MILLISECONDS);
+        Tick nextTick = new Tick(period);
+        ActorRef receiver = getSelf();
+
+        getContext().system().scheduler().scheduleOnce(timeToNextTickInMs, receiver, nextTick, getContext().dispatcher(), null);
     }
 }
