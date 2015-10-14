@@ -56,4 +56,16 @@ public class DataEventNews {
     public int getCurrentPower() {
         return currentPower;
     }
+
+    @Override
+    public String toString() {
+        return "DataEventNews{" +
+                "event=" + event +
+                ", velocity=" + velocity +
+                ", currentPower=" + currentPower +
+                ", position=" + position +
+                ", teamId='" + teamId + '\'' +
+                ", roundNumber=" + roundNumber +
+                '}';
+    }
 }
