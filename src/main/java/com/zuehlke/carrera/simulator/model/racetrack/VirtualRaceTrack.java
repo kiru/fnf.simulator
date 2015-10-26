@@ -45,8 +45,7 @@ public class VirtualRaceTrack {
     private SimulatorProperties properties;
     private String trackDesignName;
 
-    private RaceEventData kuwaitRaceEventData;
-    private int currentData = 0;
+    private PlaybackHandler playbackHandler;
 
     public VirtualRaceTrack(String raceTrackId, TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
         this.properties = properties;
@@ -55,8 +54,7 @@ public class VirtualRaceTrack {
         this.trackPhysicsModel = trackPhysicsModel;
         prepareDesigns();
 
-        kuwaitRaceEventData = ParseRecordedData.readKuwaitData();
-
+        playbackHandler = new PlaybackHandler();
     }
 
 
@@ -113,8 +111,10 @@ public class VirtualRaceTrack {
         if (isCurrentTrackKuwait) {
             calculateNewPosition(millies);
 
+            // TODO Kiru: refactor ...
+
             LOG.info("Track is Kuwait - Events are from recording {}", millies);
-            SensorEvent sensorEvent = kuwaitRaceEventData.getSensorEvents().get(currentData++);
+            SensorEvent sensorEvent = playbackHandler.getNextSensorEvent();
             fireRaceTrackEvent(sensorEvent);
 
             TrackSection section = design.findSectionAt(position);
@@ -123,14 +123,11 @@ public class VirtualRaceTrack {
                 if (section instanceof LightBarrier) {
 
                     LightBarrier barrier = (LightBarrier) section;
-                    long now = System.currentTimeMillis();
-
                     if (barrier.isRoundStart()) {
                         fireRoundPassedMessage();
                     }
 
-                    VelocityMessage message = new VelocityMessage(raceTrackId, now,
-                            averageVelocity.currentAverage(), barrier.getId());
+                    VelocityMessage message = playbackHandler.getNextVelocityMessage();
                     fireVelocityMessage(message);
                     lastMeasuredVelocity = message.getVelocity();
 
