@@ -1,10 +1,8 @@
 package com.zuehlke.carrera.simulator.model.racetrack;
 
-import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
-import com.zuehlke.carrera.relayapi.messages.RoundTimeMessage;
-import com.zuehlke.carrera.relayapi.messages.SensorEvent;
-import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import com.zuehlke.carrera.relayapi.messages.*;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
+import com.zuehlke.carrera.simulator.recording.ParseRecordedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +20,7 @@ public class VirtualRaceTrack {
 
     private static final Logger LOG = LoggerFactory.getLogger(VirtualRaceTrack.class);
     private static final int FLOATING_VELOCITY_AVERAGE_SIZE = 1;
+    private static final String TRACK_KUWAIT = "Kuwait";
 
     private final List<TrackEventListener> trackEventListeners = new ArrayList<>();
     private final List<VelocityListener> velocityListeners = new ArrayList<>();
@@ -44,6 +43,10 @@ public class VirtualRaceTrack {
     private FloatingAverage averageVelocity = new FloatingAverage(FLOATING_VELOCITY_AVERAGE_SIZE);
     private double lastMeasuredVelocity = 0;
     private SimulatorProperties properties;
+    private String trackDesignName;
+
+    private RaceEventData kuwaitRaceEventData;
+    private int currentData = 0;
 
     public VirtualRaceTrack(String raceTrackId, TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
         this.properties = properties;
@@ -51,6 +54,9 @@ public class VirtualRaceTrack {
         this.raceTrackId = raceTrackId;
         this.trackPhysicsModel = trackPhysicsModel;
         prepareDesigns();
+
+        kuwaitRaceEventData = ParseRecordedData.readKuwaitData();
+
     }
 
 
@@ -103,31 +109,66 @@ public class VirtualRaceTrack {
      */
     public void forward(int millies) {
 
-        calculateNewPosition(millies);
+        boolean isCurrentTrackKuwait = trackDesignName != null && trackDesignName.equals(TRACK_KUWAIT);
+        if (isCurrentTrackKuwait) {
+            calculateNewPosition(millies);
 
-        fireRaceTrackEvent(getCurrentSensorEvent());
+            LOG.info("Track is Kuwait - Events are from recording {}", millies);
+            SensorEvent sensorEvent = kuwaitRaceEventData.getSensorEvents().get(currentData++);
+            fireRaceTrackEvent(sensorEvent);
 
-        TrackSection section = design.findSectionAt(position);
-        if (recentSection != section) {
-            recentSection = section;
-            if (section instanceof LightBarrier) {
+            TrackSection section = design.findSectionAt(position);
+            if (recentSection != section) {
+                recentSection = section;
+                if (section instanceof LightBarrier) {
 
-                LightBarrier barrier = (LightBarrier) section;
-                long now = System.currentTimeMillis();
+                    LightBarrier barrier = (LightBarrier) section;
+                    long now = System.currentTimeMillis();
 
-                if (barrier.isRoundStart()) {
-                    fireRoundPassedMessage();
+                    if (barrier.isRoundStart()) {
+                        fireRoundPassedMessage();
+                    }
+
+                    VelocityMessage message = new VelocityMessage(raceTrackId, now,
+                            averageVelocity.currentAverage(), barrier.getId());
+                    fireVelocityMessage(message);
+                    lastMeasuredVelocity = message.getVelocity();
+
+                    double limit = ((LightBarrier) section).getSpeedLimit();
+                    if (message.getVelocity() > limit) {
+                        firePenaltyMessage(new PenaltyMessage(raceTrackId,
+                                barrier.getId(), message.getVelocity(), limit, properties.getPenalty()));
+                    }
                 }
+            }
 
-                VelocityMessage message = new VelocityMessage(raceTrackId, now,
-                        averageVelocity.currentAverage(), barrier.getId());
-                fireVelocityMessage(message);
-                lastMeasuredVelocity = message.getVelocity();
+        }else{
+            calculateNewPosition(millies);
 
-                double limit = ((LightBarrier) section).getSpeedLimit();
-                if (message.getVelocity() > limit) {
-                    firePenaltyMessage(new PenaltyMessage(raceTrackId,
-                            barrier.getId(), message.getVelocity(), limit, properties.getPenalty()));
+            fireRaceTrackEvent(getCurrentSensorEvent());
+
+            TrackSection section = design.findSectionAt(position);
+            if (recentSection != section) {
+                recentSection = section;
+                if (section instanceof LightBarrier) {
+
+                    LightBarrier barrier = (LightBarrier) section;
+                    long now = System.currentTimeMillis();
+
+                    if (barrier.isRoundStart()) {
+                        fireRoundPassedMessage();
+                    }
+
+                    VelocityMessage message = new VelocityMessage(raceTrackId, now,
+                            averageVelocity.currentAverage(), barrier.getId());
+                    fireVelocityMessage(message);
+                    lastMeasuredVelocity = message.getVelocity();
+
+                    double limit = ((LightBarrier) section).getSpeedLimit();
+                    if (message.getVelocity() > limit) {
+                        firePenaltyMessage(new PenaltyMessage(raceTrackId,
+                                barrier.getId(), message.getVelocity(), limit, properties.getPenalty()));
+                    }
                 }
             }
         }
@@ -253,8 +294,10 @@ public class VirtualRaceTrack {
         return lastMeasuredVelocity;
     }
 
-    public void selectDesign(String trackDesign) {
-        TrackDesign newDesign = trackDesignMap.get(trackDesign);
+    public void selectDesign(String trackDesignName) {
+        LOG.info("Selected design is {}", trackDesignName);
+        this.trackDesignName = trackDesignName;
+        TrackDesign newDesign = trackDesignMap.get(trackDesignName);
         if (newDesign != null) {
             this.design = newDesign;
         }
@@ -366,6 +409,20 @@ public class VirtualRaceTrack {
                         .lightBarrier("", 20, 300)
                         .curve(radius, -4)
                         .create());
-
+        trackDesignMap.put(TRACK_KUWAIT,
+                new TrackDesign()
+                        .lightBarrier("", 20, 300).asRoundStart()
+                        .straight(100)
+                        .lightBarrier("", 20, 300)
+                        .curve(radius, -2)
+                        .lightBarrier("", 20, 300)
+                        .straight(300)
+                        .curve(radius, 2)
+                        .curve(radius, 1)
+                        .curve(radius, -2)
+                        .curve(radius, 2)
+                        .curve(radius, -4)
+                        .create()
+        );
     }
 }
