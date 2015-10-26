@@ -2,6 +2,8 @@ package com.zuehlke.carrera.simulator.web;
 
 import com.zuehlke.carrera.simulator.model.racetrack.TrackInfo;
 import com.zuehlke.carrera.simulator.services.SimulatorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/simulator")
 public class SimulatorRestController {
     private final SimulatorService simulatorService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimulatorRestController.class);
 
-    @Autowired
     public SimulatorRestController(SimulatorService simulatorService) {
         this.simulatorService = simulatorService;
     }
@@ -48,6 +50,7 @@ public class SimulatorRestController {
 
     @RequestMapping(value = "/selectDesign", method = RequestMethod.POST, produces = "application/json")
     public TrackInfo selectDesign(@RequestBody String trackDesign) {
+        LOGGER.info("Set trackDesign to {}", trackDesign);
         return simulatorService.selectDesign(trackDesign);
     }
 }
