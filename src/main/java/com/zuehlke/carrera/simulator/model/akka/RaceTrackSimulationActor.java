@@ -52,11 +52,11 @@ public class RaceTrackSimulationActor extends UntypedActor {
         });
     }
 
-    public static Props props(final String trackId, final ActorRef toPlayerDispatcher, final ActorRef newsDispatcher,
+    public static Props props(final String trackId, final ActorRef toPilotDispatcher, final ActorRef newsDispatcher,
                               TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
 
         return Props.create(RaceTrackSimulationActor.class, () ->
-                new RaceTrackSimulationActor(trackId, toPlayerDispatcher, newsDispatcher,
+                new RaceTrackSimulationActor(trackId, toPilotDispatcher, newsDispatcher,
                         trackPhysicsModel, properties));
     }
 
