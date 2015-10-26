@@ -409,19 +409,36 @@ public class VirtualRaceTrack {
                         .lightBarrier("", 20, 300)
                         .curve(radius, -4)
                         .create());
+
+        /**
+         * This track is a rebuild of https://raw.githubusercontent.com/FastAndFurious/Data/master/Kuwait.jpg
+         * But:
+         * The length of each part is just estimated - and in no ways exact.
+         */
         trackDesignMap.put(TRACK_KUWAIT,
                 new TrackDesign()
                         .lightBarrier("", 20, 300).asRoundStart()
-                        .straight(100)
+                        .straight(230)
                         .lightBarrier("", 20, 300)
-                        .curve(radius, -2)
-                        .lightBarrier("", 20, 300)
-                        .straight(300)
                         .curve(radius, 2)
+                        .straight(40)
+                        .curve(radius, 1)
                         .curve(radius, 1)
                         .curve(radius, -2)
-                        .curve(radius, 2)
-                        .curve(radius, -4)
+                        .curve(radius, 1)
+                        .curve(radius, -1)
+                        .curve(radius, 1)
+                        .curve(radius, -1)
+                        .curve(radius, 4)
+                        .lightBarrier("", 20, 300)
+                        .straight(320)
+                        .lightBarrier("", 20, 300)
+                        .curve(radius, -3)
+                        .straight(181)
+                        .curve(radius, -3)
+//                        .curve(radius, -2)
+//                        .curve(radius, 2)
+//                        .curve(radius, -4)
                         .create()
         );
     }
