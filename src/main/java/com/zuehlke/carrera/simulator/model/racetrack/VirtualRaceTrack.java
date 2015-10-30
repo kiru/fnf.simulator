@@ -1,8 +1,10 @@
 package com.zuehlke.carrera.simulator.model.racetrack;
 
-import com.zuehlke.carrera.relayapi.messages.*;
+import com.zuehlke.carrera.relayapi.messages.PenaltyMessage;
+import com.zuehlke.carrera.relayapi.messages.RoundTimeMessage;
+import com.zuehlke.carrera.relayapi.messages.SensorEvent;
+import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.config.SimulatorProperties;
-import com.zuehlke.carrera.simulator.recording.ParseRecordedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -436,6 +438,54 @@ public class VirtualRaceTrack {
 //                        .curve(radius, -2)
 //                        .curve(radius, 2)
 //                        .curve(radius, -4)
+                        .create()
+        );
+
+        double outerRadius = 28;
+        double innerRadius = 18;
+        trackDesignMap.put("Test Track",
+                new TrackDesign()
+                        .lightBarrier("", 20, 900).asRoundStart()
+                        .straight(100)
+                        .lightBarrier("", 20, 900)
+                        .curve(outerRadius, 2)
+                        .curve(innerRadius, -6)
+                        .curve(outerRadius, 1)
+                        .straight(60)
+                        .lightBarrier("", 20, 900)
+                        .curve(outerRadius, 4)
+                        .lightBarrier("", 20, 900)
+                        .curve(innerRadius, -4)
+                        .straight(22)
+                        .lightBarrier("", 20, 900)
+                        .curve(innerRadius, -2)
+                        .straight(28)
+                        .lightBarrier("", 20, 900)
+                        .curve(outerRadius, 2)
+                        .curve(outerRadius, 1)
+                        .curve(innerRadius, -1)
+                        .curve(outerRadius, 1)
+                        .curve(innerRadius, -1)
+                        .curve(outerRadius, 1)
+                        .curve(innerRadius, -1)
+                        .curve(outerRadius, 1)
+                        .curve(innerRadius, -4)
+                        .straight(8)
+                        .lightBarrier("", 20, 900)
+                        .curve(outerRadius, 2)
+                        .curve(innerRadius, -2)
+                        .straight(28)
+                        .lightBarrier("", 20, 900)
+                        .curve(innerRadius, -2)
+                        .straight(16)
+                        .curve(innerRadius, -2)
+                        .curve(outerRadius, 4)
+                        .curve(innerRadius,-1)
+                        .curve(outerRadius, 3)
+                        .straight(22)
+                        .lightBarrier("", 20, 900)
+                        .curve(innerRadius, -4)
+                        .lightBarrier("", 20, 900)
                         .create()
         );
     }
