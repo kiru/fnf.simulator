@@ -1,5 +1,7 @@
 package com.zuehlke.carrera.simulator.model.racetrack;
 
+import java.util.UUID;
+
 /**
  * Base class for all track sections.
  * A relay-track consists of many connected TrackSections.
@@ -9,6 +11,7 @@ package com.zuehlke.carrera.simulator.model.racetrack;
  */
 public abstract class TrackSection {
 
+    protected final String id;
     protected final double length;
     protected final Anchor initialAnchor;
     protected double lengthUntilEnd;
@@ -16,6 +19,7 @@ public abstract class TrackSection {
     protected TrackSection(double length, Anchor initialAnchor) {
         this.length = length;
         this.initialAnchor = initialAnchor;
+        id = UUID.randomUUID().toString();;
     }
 
     public abstract double invRadius();

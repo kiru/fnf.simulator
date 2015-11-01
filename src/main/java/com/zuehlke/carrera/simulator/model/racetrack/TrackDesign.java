@@ -9,6 +9,7 @@ import java.util.*;
  */
 public class TrackDesign {
 
+    private String trackId = UUID.randomUUID().toString();
     private double length;
     private List<TrackSection> sections = new ArrayList<>();
     private Anchor initialAnchor = new Anchor(0, 0, 0);
