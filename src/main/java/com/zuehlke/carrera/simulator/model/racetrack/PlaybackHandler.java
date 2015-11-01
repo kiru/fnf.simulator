@@ -20,6 +20,7 @@ public class PlaybackHandler {
     private final List<SensorEvent> sensorEvents;
     private final List<VelocityMessage> velocityEvents;
     private int milliesSinceStart;
+    private long startTimeAsMillisecond = System.currentTimeMillis();
 
     public PlaybackHandler() {
         RaceEventData kuwaitRaceEventData = ParseRecordedData.readKuwaitData();
@@ -48,7 +49,7 @@ public class PlaybackHandler {
                                                 nextEventOrNull.getA(),
                                                 nextEventOrNull.getG(),
                                                 nextEventOrNull.getM(),
-                                                nextEventOrNull.getT());
+                                                nextEventOrNull.getT() + startTimeAsMillisecond);
             return Optional.of(value);
         }
 
@@ -58,7 +59,9 @@ public class PlaybackHandler {
     public Optional<VelocityMessage> getNextVelocityMessage() {
         VelocityMessage nextEventOrNull =
             getNextEventOrNull(velocityEvents, milliesSinceStart, VelocityMessage::getT);
-
+        if (nextEventOrNull != null) {
+            nextEventOrNull.setTimeStamp(startTimeAsMillisecond + nextEventOrNull.getT());
+        }
         return Optional.ofNullable(nextEventOrNull);
     }
 
@@ -69,7 +72,8 @@ public class PlaybackHandler {
         for(int i = sensorEvents.size() - 1; i >= 0; i--) {
             T sensorEvent = sensorEvents.get(i);
             int t = extractT.applyAsInt(sensorEvent);
-            if (t <= milliesDelta) {
+            boolean latestMillies = t <= milliesDelta;
+            if (latestMillies) {
                 return sensorEvents.remove(i);
             } else {
                 return null;
