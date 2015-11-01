@@ -2,6 +2,8 @@ package com.zuehlke.carrera.simulator.recording;
 
 import com.google.gson.Gson;
 import com.zuehlke.carrera.relayapi.messages.RaceEventData;
+import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +35,29 @@ public class ParseRecordedData {
         print(raceEvent.getSensorEvents());
         print(raceEvent.getVelocityMessages());
         print(raceEvent.getPowerControls());
+
+        printVelocityMessageFormatted(raceEvent);
+    }
+
+    private static void printVelocityMessageFormatted(RaceEventData raceEvent) {
+        List<VelocityMessage> velocityMessages = raceEvent.getVelocityMessages();
+
+        VelocityMessage previous = new VelocityMessage();
+
+        for (VelocityMessage velocityMessage : velocityMessages) {
+            String time = StringUtils.leftPad(String.valueOf(velocityMessage.getT()), 6);
+            String velocity = StringUtils.leftPad(String.valueOf(velocityMessage.getVelocity()), 6);
+            String diffToPrevious = String.valueOf(Math.abs(previous.getT() - velocityMessage.getT()));
+
+            System.out.printf("%sms %s %sms %n", time, velocity, diffToPrevious);
+            previous = velocityMessage;
+        }
     }
 
     private static <T> List<T> print(List<T> sensorEvents) {
         for (T sensorEvent : sensorEvents) {
-            String x = ReflectionToStringBuilder.toString(sensorEvent);
-            System.out.println(x);
+            String toString = ReflectionToStringBuilder.toString(sensorEvent);
+            System.out.println(toString);
         }
         return sensorEvents;
     }
