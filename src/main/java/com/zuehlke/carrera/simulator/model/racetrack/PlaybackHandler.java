@@ -6,6 +6,8 @@ import com.zuehlke.carrera.relayapi.messages.VelocityMessage;
 import com.zuehlke.carrera.simulator.recording.ParseRecordedData;
 
 /**
+ * TODO Kiru: write decent comment
+ *
  * @author Kirusanth Poopalasingam ( pkirusanth@gmail.com )
  */
 public class PlaybackHandler {
@@ -19,7 +21,12 @@ public class PlaybackHandler {
     }
 
     public SensorEvent getNextSensorEvent() {
-        return kuwaitRaceEventData.getSensorEvents().get(sensorEventIndex++);
+        SensorEvent s = kuwaitRaceEventData.getSensorEvents().get(sensorEventIndex++);
+        /**
+         * The recorded events don't contain the timestamp. It only contains the value t ( diff to start time )
+         * We create a new event where the time stamp is equal to t
+         */
+        return new SensorEvent(s.getRaceTrackId(), s.getA(), s.getG(), s.getM(), s.getT());
     }
 
     public VelocityMessage getNextVelocityMessage() {
