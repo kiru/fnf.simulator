@@ -115,8 +115,12 @@ public class VirtualRaceTrack {
 
             // TODO Kiru: refactor ...
 
-            LOG.info("Track is Kuwait - Events are from recording {}", millies);
+            LOG.info("Track is Kuwait - Events are from recording {}ms", millies);
             SensorEvent sensorEvent = playbackHandler.getNextSensorEvent();
+
+            long now = System.currentTimeMillis();
+            gyr[2] = (int) razorModel.gyro_z(getDesign().invRad(position), velocity, now);
+
             fireRaceTrackEvent(sensorEvent);
 
             TrackSection section = design.findSectionAt(position);
@@ -125,35 +129,6 @@ public class VirtualRaceTrack {
                 if (section instanceof LightBarrier) {
 
                     LightBarrier barrier = (LightBarrier) section;
-                    if (barrier.isRoundStart()) {
-                        fireRoundPassedMessage();
-                    }
-
-                    VelocityMessage message = playbackHandler.getNextVelocityMessage();
-                    fireVelocityMessage(message);
-                    lastMeasuredVelocity = message.getVelocity();
-
-                    double limit = ((LightBarrier) section).getSpeedLimit();
-                    if (message.getVelocity() > limit) {
-                        firePenaltyMessage(new PenaltyMessage(raceTrackId,
-                                barrier.getId(), message.getVelocity(), limit, properties.getPenalty()));
-                    }
-                }
-            }
-
-        }else{
-            calculateNewPosition(millies);
-
-            fireRaceTrackEvent(getCurrentSensorEvent());
-
-            TrackSection section = design.findSectionAt(position);
-            if (recentSection != section) {
-                recentSection = section;
-                if (section instanceof LightBarrier) {
-
-                    LightBarrier barrier = (LightBarrier) section;
-                    long now = System.currentTimeMillis();
-
                     if (barrier.isRoundStart()) {
                         fireRoundPassedMessage();
                     }
@@ -170,6 +145,41 @@ public class VirtualRaceTrack {
                     }
                 }
             }
+
+        }else{
+            calculateNewPosition(millies);
+            fireRaceTrackEvent(getCurrentSensorEvent());
+
+            TrackSection section = design.findSectionAt(position);
+            boolean hasTrackSectionChanged = recentSection != section;
+
+            if (hasTrackSectionChanged) {
+                recentSection = section;
+                if (section instanceof LightBarrier) {
+                    fireVelocityEvent((LightBarrier) section);
+                }
+            }
+        }
+    }
+
+    private void fireVelocityEvent(LightBarrier section) {
+        long now = System.currentTimeMillis();
+
+        if (section.isRoundStart()) {
+            fireRoundPassedMessage();
+        }
+
+        VelocityMessage message = new VelocityMessage(raceTrackId, now,
+                averageVelocity.currentAverage(), section.getId());
+        fireVelocityMessage(message);
+        lastMeasuredVelocity = message.getVelocity();
+
+        double limit = section.getSpeedLimit();
+        boolean hitSpeedLimit = message.getVelocity() > limit;
+
+        if (hitSpeedLimit) {
+            firePenaltyMessage(new PenaltyMessage(raceTrackId,
+                    section.getId(), message.getVelocity(), limit, properties.getPenalty()));
         }
     }
 
@@ -435,9 +445,6 @@ public class VirtualRaceTrack {
                         .curve(radius, -3)
                         .straight(181)
                         .curve(radius, -3)
-//                        .curve(radius, -2)
-//                        .curve(radius, 2)
-//                        .curve(radius, -4)
                         .create()
         );
 
