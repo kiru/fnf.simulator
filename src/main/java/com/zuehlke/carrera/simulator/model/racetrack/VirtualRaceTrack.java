@@ -471,5 +471,24 @@ public class VirtualRaceTrack {
                         .lightBarrier("", 20, 900)
                         .create()
         );
+
+        trackDesignMap.put("Inner Test Track",
+                new TrackDesign()
+                        .lightBarrier("", 20, 900).asRoundStart()
+                        .straight(100)
+                        .lightBarrier("", 20, 900)
+                        .curve(innerRadius, -2)
+                        .straight(20)
+                        .curve(outerRadius, 2)
+                        .straight(20)
+                        .curve(outerRadius, 2)
+                        .straight(65)
+                        .curve(outerRadius, 2)
+                        .straight(400)
+                        .curve(outerRadius, 4)
+                        .straight(195)
+
+                        .create()
+        );
     }
 }
