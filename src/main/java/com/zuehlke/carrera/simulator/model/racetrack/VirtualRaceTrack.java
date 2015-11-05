@@ -250,6 +250,8 @@ public class VirtualRaceTrack {
     }
 
     public void reset() {
+        LOG.info("Reset the virtual race track");
+        playbackHandler = new PlaybackHandler();
         position = 0;
         velocity = 0;
         currentPower = 0;
@@ -263,7 +265,6 @@ public class VirtualRaceTrack {
 
     public void setPower(int p) {
         currentPower = p;
-
     }
 
     public void changePower(int delta) {
