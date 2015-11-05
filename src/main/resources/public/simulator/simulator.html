@@ -49,6 +49,10 @@
 
                 <select id="design" class="btn-primary" ng-model="selectedDesign" ng-change="selectDesign()"
                         ng-options="option for option in availableDesigns"></select>
+
+                <button class="btn btn-primary" ng-click="startRecording()" ng-show="connected">Start recording </button>
+                <button class="btn btn-primary" ng-click="stopRecording()" ng-show="connected">Stop recording </button>
+
             </div>
         </div>
 
