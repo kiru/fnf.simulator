@@ -19,10 +19,11 @@ import java.util.Objects;
 public class ParseRecordedData {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseRecordedData.class);
     private static final String FILE_NAME = "/recorded-data/Kobayashi-Kuwait-2015-10-6.json";
+    private static final String OUR_RECORDING = "/recorded-data/perferct 2_1446813379464.json";
 
     public static RaceEventData readKuwaitData() {
-        LOGGER.info("Reading data from {}", FILE_NAME);
-        InputStream resourceAsStream = ParseRecordedData.class.getResourceAsStream(FILE_NAME);
+        LOGGER.info("Reading data from {}", OUR_RECORDING);
+        InputStream resourceAsStream = ParseRecordedData.class.getResourceAsStream(OUR_RECORDING);
         Objects.requireNonNull(resourceAsStream, "No file found");
 
         Gson gson = new Gson();

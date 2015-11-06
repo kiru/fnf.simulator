@@ -26,10 +26,12 @@ public class PlaybackHandler {
         RaceEventData kuwaitRaceEventData = ParseRecordedData.readKuwaitData();
 
         sensorEvents = new ArrayList<>(kuwaitRaceEventData.getSensorEvents());
-        sensorEvents.sort((o1, o2) -> o2.getT() - o1.getT());
+        sensorEvents.sort((o1, o2) -> (int) (o2.getTimeStamp() - o1.getTimeStamp()));
+        sensorEvents.stream().forEach((o) -> o.offSetTime(sensorEvents.get(0).getTimeStamp()));
 
         velocityEvents = new ArrayList<>(kuwaitRaceEventData.getVelocityMessages());
-        velocityEvents.sort((o1, o2) -> o2.getT() - o1.getT());
+        velocityEvents.sort((o1, o2) -> (int) (o2.getTimeStamp() - o1.getTimeStamp()));
+        velocityEvents.stream().forEach((o) -> o.offSetTime(velocityEvents.get(0).getTimeStamp()));
     }
 
     public void updateTime(int milliesDelta) {
