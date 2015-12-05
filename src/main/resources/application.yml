@@ -16,7 +16,7 @@ simulator:
   sigma: 4
 
   # duration of a penalty forced brake in ms
-  penalty: 1000
+  penalty: 2000
 
   razor:
     gyroz:
