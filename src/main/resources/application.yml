@@ -7,7 +7,8 @@ server:       # Note that the port MUST be 80 to work in SC cloud
 
 simulator:
   name: sim02  # Id of this simulator. Should be unique.
-  relayUrl:  ws://relay2.beta.swisscloud.io/ws/rest/messages # Address of relay in SC cloud !
+  #relayUrl:  ws://relay2.beta.swisscloud.io/ws/rest/messages # Address of relay in SC cloud !
+  relayUrl: ws://localhost:8090/ws/rest/messages
   rabbitUrl: undefined # rabbit queue hosted somewhere in cloud as well
 
   # The ticks that run the simulator. Gaussian distribution to model latency
@@ -15,7 +16,7 @@ simulator:
   sigma: 4
 
   # duration of a penalty forced brake in ms
-  penalty: 1000
+  penalty: 2000
 
   razor:
     gyroz:
