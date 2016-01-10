@@ -29,6 +29,7 @@ public class RaceTrackSimulationActor extends UntypedActor {
     private boolean penaltyPhase;
     private SimulatorProperties properties;
     private RoundTimeMessage previousRoundTimeMessage;
+    private boolean raceOngoing = false;
 
     public RaceTrackSimulationActor(String trackId, ActorRef pilot, ActorRef newsDispatcher,
                                     TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
@@ -52,12 +53,12 @@ public class RaceTrackSimulationActor extends UntypedActor {
         });
     }
 
-    public static Props props(final String trackId, final ActorRef toPilotDispatcher, final ActorRef newsDispatcher,
+    public static Props props(final String trackId, final ActorRef toPlayerDispatcher, final ActorRef newsDispatcher,
                               TrackPhysicsModel trackPhysicsModel, SimulatorProperties properties) {
 
         return Props.create(RaceTrackSimulationActor.class, () ->
-                new RaceTrackSimulationActor(trackId, toPilotDispatcher, newsDispatcher,
-                        trackPhysicsModel, properties));
+            new RaceTrackSimulationActor(trackId, toPlayerDispatcher, newsDispatcher,
+                trackPhysicsModel, properties));
     }
 
     @Override
@@ -171,17 +172,22 @@ public class RaceTrackSimulationActor extends UntypedActor {
         if (newsDispatcher != null) {
 
             newsDispatcher.tell(new DataEventNews(
-                            currentTeam,
-                            event,
-                            track.getLastMeasuredVelocity(),
-                            track.getPower(),
-                            track.calculateCurrentAnchor(),
-                            track.getRoundNumber()),
-                    getSelf());
+                    currentTeam,
+                    event,
+                    track.getLastMeasuredVelocity(),
+                    track.getPower(),
+                    track.calculateCurrentAnchor(),
+                    track.getRoundNumber()),
+                getSelf());
         }
     }
 
     private void handlePowerControl(PowerControl control) {
+
+        if ( ! raceOngoing ) {
+            track.setPower(0);
+            return;
+        }
         // TODO: this shouldn't be here
         currentTeam = control.getTeamId();
 
@@ -199,10 +205,13 @@ public class RaceTrackSimulationActor extends UntypedActor {
     }
 
     private void handleRaceStart(RaceStartMessage message) {
+        raceOngoing = true;
         track.reset();
     }
 
     private void handleRaceStop(RaceStopMessage message) {
+        track.setPower(0);
+        raceOngoing = false;
     }
 
 }

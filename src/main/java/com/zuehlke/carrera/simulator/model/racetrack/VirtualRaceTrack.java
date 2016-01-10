@@ -290,6 +290,28 @@ public class VirtualRaceTrack {
     }
 
     private void prepareDesigns() {
+        double radius = 28;
+        trackDesignMap.put("Dubai",
+            new TrackDesign()
+                .lightBarrier("A001", 20, 300).asRoundStart()
+                .straight(220)
+                .lightBarrier("A002", 20, 300)
+                .curve(radius, -3)
+                .lightBarrier("A003", 20, 300)
+                .straight(100)
+                .lightBarrier("A004", 20, 300)
+                .curve(radius, -3)
+                .lightBarrier("A005", 20, 300)
+                .straight(150)
+                .lightBarrier("A006", 20, 300)
+                .curve(radius, 4)
+                .lightBarrier("A007", 20, 300)
+                .straight(100)
+                .lightBarrier("A008", 20, 300)
+                .curve(radius, -3)
+                .straight(70)
+                .curve(radius, -3)
+                .create());
 
         trackDesignMap.put("Budapest",
                 new TrackDesign()
@@ -329,7 +351,6 @@ public class VirtualRaceTrack {
                         .straight(200).lightBarrier("BA03", 20, 300).curve(30, -4).lightBarrier("BA04", 20, 300)
                         .straight(100).create());
 
-        double radius = 28;
         trackDesignMap.put("Oerlikon",
                 new TrackDesign()
                         .straight(120)
